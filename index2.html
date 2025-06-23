@@ -155,7 +155,97 @@
         <button onclick="clearAllImages()">清 除</button>
         <button onclick="toggleFileNames()" id="toggleFileNameButton">名 称</button>
         <button onclick="toggleGridLayout()" id="gridLayoutButton">9×6</button>
+        <button onclick="toggleStopwatch()" id="stopwatchButton">秒 表</button>
     </div>
+
+    <!-- 添加秒表显示区域 -->
+    <div id="stopwatchOverlay" class="stopwatch-overlay">
+        <div id="stopwatchDisplay">00:00:0000</div>
+        <div class="stopwatch-buttons">
+            <button id="stopwatchStartBtn">开始</button>
+            <button id="stopwatchResetBtn">重置</button>
+        </div>
+        <button class="stopwatch-close" onclick="toggleStopwatch()">×</button>
+    </div>
+
+    <style>
+        /* 添加秒表样式 */
+        .stopwatch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            z-index: 1000;
+        }
+
+        #stopwatchDisplay {
+            font-size: 18vw; /* 使用视口宽度的20%作为字体大小，可根据需要调整 */
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+            letter-spacing: 1vw; /* 使用视口宽度的1%作为字母间距，可根据需要调整 */
+            font-family: Consolas, monospace;
+        }
+
+        .stopwatch-buttons {
+            display: flex;
+            gap: 40px;
+        }
+
+        .stopwatch-buttons button {
+            width: 160px;
+            height: 80px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .stopwatch-buttons button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        #stopwatchStartBtn {
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        #stopwatchStartBtn.running {
+            background: rgba(244, 67, 54, 0.2);
+        }
+
+        #stopwatchResetBtn {
+            background: rgba(33, 150, 243, 0.2);
+        }
+
+        .stopwatch-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 
     <script>
         const gridContainer = document.getElementById('gridContainer');
@@ -398,57 +488,123 @@
             closeZoom(); // 关闭缩放预览
         }
     </script>
-</body>
-</html>
 
 <script>
-    let currentLayout = '9x6';
+// 添加布局切换变量和函数
+let currentLayout = '9x6';
+
+function toggleGridLayout() {
+    const gridContainer = document.getElementById('gridContainer');
+    const gridLayoutButton = document.getElementById('gridLayoutButton');
     
-    function toggleGridLayout() {
-        const gridContainer = document.getElementById('gridContainer');
-        const gridLayoutButton = document.getElementById('gridLayoutButton');
+    if (currentLayout === '9x6') {
+        // 切换到4x2布局
+        gridContainer.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        gridContainer.style.gridTemplateRows = 'repeat(2, 1fr)';
+        gridLayoutButton.textContent = '4×2';
+        currentLayout = '4x2';
         
-        if (currentLayout === '9x6') {
-            // 切换到4x2布局
-            gridContainer.style.gridTemplateColumns = 'repeat(4, 1fr)';
-            gridContainer.style.gridTemplateRows = 'repeat(2, 1fr)';
-            gridLayoutButton.textContent = '4×2';
-            currentLayout = '4x2';
-            
-            // 重新创建8个网格单元格
-            gridContainer.innerHTML = '';
-            for (let i = 0; i < 8; i++) {
-                const gridItem = document.createElement('div');
-                gridItem.className = 'grid-item';
-                gridItem.draggable = true;
-                gridItem.addEventListener('dragstart', handleDragStart);
-                gridItem.addEventListener('dragover', handleDragOver);
-                gridItem.addEventListener('drop', handleDrop);
-                gridContainer.appendChild(gridItem);
-            }
-        } else {
-            // 切换回9x6布局
-            gridContainer.style.gridTemplateColumns = 'repeat(9, 1fr)';
-            gridContainer.style.gridTemplateRows = 'repeat(6, 1fr)';
-            gridLayoutButton.textContent = '9×6';
-            currentLayout = '9x6';
-            
-            // 重新创建54个网格单元格
-            gridContainer.innerHTML = '';
-            for (let i = 0; i < 54; i++) {
-                const gridItem = document.createElement('div');
-                gridItem.className = 'grid-item';
-                gridItem.draggable = true;
-                gridItem.addEventListener('dragstart', handleDragStart);
-                gridItem.addEventListener('dragover', handleDragOver);
-                gridItem.addEventListener('drop', handleDrop);
-                gridContainer.appendChild(gridItem);
-            }
+        // 重新创建8个网格单元格
+        gridContainer.innerHTML = '';
+        for (let i = 0; i < 8; i++) {
+            const gridItem = document.createElement('div');
+            gridItem.className = 'grid-item';
+            gridItem.draggable = true;
+            gridItem.addEventListener('dragstart', handleDragStart);
+            gridItem.addEventListener('dragover', handleDragOver);
+            gridItem.addEventListener('drop', handleDrop);
+            gridContainer.appendChild(gridItem);
         }
+    } else {
+        // 切换回9x6布局
+        gridContainer.style.gridTemplateColumns = 'repeat(9, 1fr)';
+        gridContainer.style.gridTemplateRows = 'repeat(6, 1fr)';
+        gridLayoutButton.textContent = '9×6';
+        currentLayout = '9x6';
         
-        // 重新显示图片
-        if (currentFiles.length > 0) {
-            displayImages(currentFiles);
+        // 重新创建54个网格单元格
+        gridContainer.innerHTML = '';
+        for (let i = 0; i < 54; i++) {
+            const gridItem = document.createElement('div');
+            gridItem.className = 'grid-item';
+            gridItem.draggable = true;
+            gridItem.addEventListener('dragstart', handleDragStart);
+            gridItem.addEventListener('dragover', handleDragOver);
+            gridItem.addEventListener('drop', handleDrop);
+            gridContainer.appendChild(gridItem);
         }
     }
+    
+    // 重新显示图片
+    if (currentFiles.length > 0) {
+        displayImages(currentFiles);
+    }
+}
+
+// 禁用右键菜单
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// 禁用键盘快捷键
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+        e.preventDefault();
+    }
+});
+
+// 秒表功能
+const stopwatchOverlay = document.getElementById('stopwatchOverlay');
+const stopwatchDisplay = document.getElementById('stopwatchDisplay');
+const stopwatchStartBtn = document.getElementById('stopwatchStartBtn');
+const stopwatchResetBtn = document.getElementById('stopwatchResetBtn');
+
+let startTime = 0;
+let elapsedTime = 0;
+let isRunning = false;
+let animationFrame;
+
+function formatTime(ms) {
+    ms = Math.max(0, Math.floor(ms));
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    const millis = Math.floor(ms % 1000);
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${millis.toString().padStart(3, '0')}`;
+}
+
+function updateStopwatch() {
+    if (!isRunning) return;
+    stopwatchDisplay.textContent = formatTime(elapsedTime + (Date.now() - startTime));
+    animationFrame = requestAnimationFrame(updateStopwatch);
+}
+
+function toggleStopwatch() {
+    const isVisible = stopwatchOverlay.style.display === 'flex';
+    stopwatchOverlay.style.display = isVisible ? 'none' : 'flex';
+}
+
+stopwatchStartBtn.onclick = function() {
+    if (!isRunning) {
+        startTime = Date.now();
+        isRunning = true;
+        this.textContent = '暂停';
+        updateStopwatch();
+    } else {
+        elapsedTime += Date.now() - startTime;
+        isRunning = false;
+        this.textContent = '继续';
+        cancelAnimationFrame(animationFrame);
+    }
+};
+
+stopwatchResetBtn.onclick = function() {
+    isRunning = false;
+    elapsedTime = 0;
+    stopwatchStartBtn.textContent = '开始';
+    stopwatchDisplay.textContent = '00:00:000';
+    cancelAnimationFrame(animationFrame);
+};
+
+// 初始化显示
+stopwatchDisplay.textContent = '00:00:000';
 </script>
