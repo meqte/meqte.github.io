@@ -1,7 +1,7 @@
 # ===================== 基础站点配置 =====================
-title: 开发者导航站
-subtitle: 收集最实用的开发工具和资源
-description: 专注开发者工具、学习资源和云服务平台的导航站
+title: jcnf的导航站
+subtitle: 只谈实用不谈技术
+description: 专注收集最实用的网站和资源，只为技术爱好者提供便利
 favicon: /favicon.ico
 banner: /images/webstack_banner_cn.png
 logo:
