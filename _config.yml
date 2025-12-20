@@ -14,7 +14,6 @@ timezone: ''
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://meqte.github.io
-permalink: :/Index/
 root: /Index/  # 新增：指定博客根路径为Index仓库
 permalink: :year/:month/:day/:title/  # 修正：恢复默认文章链接格式
 permalink_defaults:
@@ -98,7 +97,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: webstack
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
@@ -107,3 +106,4 @@ deploy:
   repo: https://github.com/meqte/Index.git
   branch: main  # 或 master（看你GitHub仓库的默认分支）
   message: "Hexo deploy: {{ now('YYYY-MM-DD HH:mm:ss') }}"  # 可选：部署提交信息
+  force_push: true  # 新增这行，开启强制推送
