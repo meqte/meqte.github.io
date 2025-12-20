@@ -1,8 +1,15 @@
 
 $(document).ready(function () {
   //img lazy loaded
-  const observer = lozad();
-  observer.observe();
+  // 直接加载所有图片（移除了lozad懒加载）
+  $('.xe-user-img img').each(function() {
+    const $img = $(this);
+    // 如果是data-src属性，则使用data-src作为图片源
+    const src = $img.attr('data-src') || $img.attr('src');
+    if (src) {
+      $img.attr('src', src).removeAttr('data-src');
+    }
+  });
 
   $(document).on('click', '.has-sub', function () {
     var _this = $(this)

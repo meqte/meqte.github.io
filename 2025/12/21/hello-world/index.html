@@ -19,20 +19,24 @@ var expandAll = true;
 --><!-- FB Open Graph--><meta property="og:type" content="article"><meta property="og:url" content="https://meqte.github.io/2025/12/21/hello-world/index.html"><meta property="og:title" content="Hexo - "><meta property="og:description" content=""><meta property="og:site_name" content="Hexo - "><meta property="og:image" content="/images/webstack_banner_cn.png"><!-- Twitter Cards--><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Hexo - "><meta name="twitter:description" content=""><meta name="twitter:image" content="/images/webstack_banner_cn.png"><style>
   /* ########## 核心修复：图片加载但不显示 ########## */
   /* 强制图片容器显示 + 固定尺寸 */
-  .webstack-item .user-img {
+  .webstack-item .user-img,
+  .xe-user-img {
     display: inline-block !important;
     width: 48px !important;
     height: 48px !important;
     margin-right: 10px !important;
     border-radius: 4px !important;
     background-color: rgba(0,0,0,0.1) !important;
+    overflow: hidden !important;
   }
   /* 强制图片填充容器 */
-  .webstack-item .user-img img {
+  .webstack-item .user-img img,
+  .xe-user-img img {
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
     display: block !important;
+    visibility: visible !important;
   }
   /* 兼容旧版主题的webstack-icon类 */
   .webstack-item .webstack-icon {
@@ -43,6 +47,14 @@ var expandAll = true;
     background-size: contain !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
+  }
+  /* 修复xe-widget中的图片显示 */
+  .xe-widget .xe-comment-entry {
+    display: flex !important;
+    align-items: center !important;
+  }
+  .xe-widget .xe-user-img {
+    flex-shrink: 0 !important;
   }
   /* ########## 布局优化 ########## */
   .webstack-item {
@@ -67,7 +79,7 @@ var expandAll = true;
     visibility: visible !important;
   }
 </style><meta name="generator" content="Hexo 7.3.0"></head></head><footer class="main-footer sticky footer-type-1"><div class="footer-inner"><p>&copy; 2025
-<a href="javascript:void(0);"><strong>John Doe</strong></a> | Design by<a href="http://viggoz.com" target="_blank"><strong>Viggo</strong></a> | Power by<a href="https://hexo.io/" target="_blank"><strong>Hexo</strong></a> &<a href="https://github.com/HCLonely/hexo-theme-webstack/" target="_blank"><strong>hexo-theme-webstack</strong></a></p><div class="go-up"><a href="#" rel="go-top"><i class="fas fa-angle-up"></i></a></div></div></footer><script src="/js/bootstrap.min.js"></script><script src="/js/TweenMax.min.js"></script><script src="/js/resizeable.min.js"></script><script src="/js/joinable.js"></script><script src="/js/xenon-api.min.js"></script><script src="/js/xenon-toggles.min.js"></script><script src="/js/xenon-custom.min.js"></script><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script></script><script>
+<a href="javascript:void(0);"><strong>John Doe</strong></a> | Design by<a href="http://viggoz.com" target="_blank"><strong>Viggo</strong></a> | Power by<a href="https://hexo.io/" target="_blank"><strong>Hexo</strong></a> &<a href="https://github.com/HCLonely/hexo-theme-webstack/" target="_blank"><strong>hexo-theme-webstack</strong></a></p><div class="go-up"><a href="#" rel="go-top"><i class="fas fa-angle-up"></i></a></div></div></footer><script src="/js/bootstrap.min.js"></script><script src="/js/TweenMax.min.js"></script><script src="/js/resizeable.min.js"></script><script src="/js/joinable.js"></script><script src="/js/xenon-api.min.js"></script><script src="/js/xenon-toggles.min.js"></script><script src="/js/xenon-custom.min.js"></script><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>
   // ########## 修复左侧菜单跳转（适配根路径） ##########
   $(document).ready(function() {
     // 绑定左侧菜单点击事件
