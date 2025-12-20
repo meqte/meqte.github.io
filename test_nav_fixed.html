@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>导航测试</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="sidebar-menu">
+        <ul class="main-menu" id="main-menu">
+            <li><a class="smooth" href="/#开发必备"><i class="fas fa-code"></i><span class="title">开发必备</span></a></li>
+            <li><a class="smooth" href="/#学习充电"><i class="fas fa-graduation-cap"></i><span class="title">学习充电</span></a></li>
+            <li><a class="smooth" href="/#办公效率"><i class="fas fa-briefcase"></i><span class="title">办公效率</span></a></li>
+            <li><a class="smooth" href="/#设计创作"><i class="fas fa-pen-ruler"></i><span class="title">设计创作</span></a></li>
+        </ul>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // 绑定左侧菜单点击事件
+            $('.sidebar-menu li a').click(function(e) {
+                var targetHref = $(this).attr('href');
+                
+                console.log("点击链接:", targetHref);
+                
+                // 如果是返回主页的链接（如/#开发必备），则跳转到主页并带上锚点
+                if (targetHref.startsWith('/#')) {
+                    e.preventDefault();
+                    console.log("跳转到:", targetHref);
+                    // 跳转到主页并带上锚点
+                    window.location.href = targetHref;
+                    return false;
+                }
+                // 如果是锚点链接（以#开头），则平滑滚动到对应位置
+                else if (targetHref.startsWith('#')) {
+                    e.preventDefault();
+                    var targetElement = $(targetHref);
+                    if (targetElement.length > 0) {
+                        // 平滑滚动到目标分类
+                        $('html, body').animate({
+                            scrollTop: targetElement.offset().top - 20
+                        }, 300);
+                        // 更新URL锚点
+                        window.location.hash = targetHref;
+                    }
+                }
+                // 如果是外部链接（如/about/），则直接跳转
+                else if (targetHref.startsWith('/') || targetHref.startsWith('http')) {
+                    // 不阻止默认行为，允许正常跳转
+                    console.log("外部链接，允许正常跳转");
+                    return true;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航站概念演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .header {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            padding: 15px 0;
+        }
+        
+        .nav-menu li {
+            margin-right: 25px;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .nav-menu a:hover {
+            background-color: #e9ecef;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-box {
+            max-width: 600px;
+            margin: 30px auto;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .category-title {
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            color: #333;
+        }
+        
+        .sites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .site-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .site-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .site-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .site-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .site-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-wrap: wrap;
+            }
+            
+            .nav-menu li {
+                margin-bottom: 10px;
+            }
+            
+            .sites-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="#">首页</a></li>
+                <li><a href="#">开发工具</a></li>
+                <li><a href="#">学习资源</a></li>
+                <li><a href="#">设计工具</a></li>
+                <li><a href="#">云服务</a></li>
+                <li><a href="#">关于我们</a></li>
+            </ul>
+        </div>
+    </header>
+    
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1>开发者导航站</h1>
+            <p>收集最实用的开发工具、学习资源和云服务平台</p>
+            
+            <!-- 搜索框 -->
+            <div class="search-box">
+                <input type="text" placeholder="搜索工具、资源或服务...">
+            </div>
+        </div>
+    </section>
+    
+    <div class="container">
+        <!-- 开发工具分类 -->
+        <h2 class="category-title">🔥 热门开发工具</h2>
+        <div class="sites-grid">
+            <a href="https://github.com/" class="site-card">
+                <h3 class="site-title">GitHub</h3>
+                <p class="site-description">全球最大代码托管平台，开源项目协作开发首选</p>
+                <div class="site-tags">
+                    <span class="tag">代码托管</span>
+                    <span class="tag">开源</span>
+                    <span class="tag">协作</span>
+                </div>
+            </a>
+            
+            <a href="https://code.visualstudio.com/" class="site-card">
+                <h3 class="site-title">VS Code</h3>
+                <p class="site-description">微软出品的轻量级代码编辑器，插件生态丰富</p>
+                <div class="site-tags">
+                    <span class="tag">编辑器</span>
+                    <span class="tag">免费</span>
+                    <span class="tag">跨平台</span>
+                </div>
+            </a>
+            
+            <a href="https://www.postman.com/" class="site-card">
+                <h3 class="site-title">Postman</h3>
+                <p class="site-description">API调试神器，接口测试和文档生成一体化平台</p>
+                <div class="site-tags">
+                    <span class="tag">API测试</span>
+                    <span class="tag">调试</span>
+                    <span class="tag">文档</span>
+                </div>
+            </a>
+        </div>
+        
+        <!-- 学习资源分类 -->
+        <h2 class="category-title">📚 优质学习资源</h2>
+        <div class="sites-grid">
+            <a href="https://juejin.cn/" class="site-card">
+                <h3 class="site-title">掘金</h3>
+                <p class="site-description">开发者内容社区，技术文章和实战教程丰富</p>
+                <div class="site-tags">
+                    <span class="tag">技术社区</span>
+                    <span class="tag">教程</span>
+                    <span class="tag">分享</span>
+                </div>
+            </a>
+            
+            <a href="https://www.runoob.com/" class="site-card">
+                <h3 class="site-title">菜鸟教程</h3>
+                <p class="site-description">零基础编程入门，语法速查和案例实战平台</p>
+                <div class="site-tags">
+                    <span class="tag">入门</span>
+                    <span class="tag">教程</span>
+                    <span class="tag">免费</span>
+                </div>
+            </a>
+            
+            <a href="https://www.bilibili.com/" class="site-card">
+                <h3 class="site-title">B站学习区</h3>
+                <p class="site-description">免费视频教程，涵盖编程、设计、职场等多个领域</p>
+                <div class="site-tags">
+                    <span class="tag">视频</span>
+                    <span class="tag">免费</span>
+                    <span class="tag">多样化</span>
+                </div>
+            </a>
+        </div>
+        
+        <!-- 云服务分类 -->
+        <h2 class="category-title">☁️ 云服务平台</h2>
+        <div class="sites-grid">
+            <a href="https://www.aliyun.com/" class="site-card">
+                <h3 class="site-title">阿里云</h3>
+                <p class="site-description">云服务器、域名、OSS等企业级云服务</p>
+                <div class="site-tags">
+                    <span class="tag">云服务器</span>
+                    <span class="tag">企业级</span>
+                    <span class="tag">国内</span>
+                </div>
+            </a>
+            
+            <a href="https://cloud.tencent.com/" class="site-card">
+                <h3 class="site-title">腾讯云</h3>
+                <p class="site-description">云服务器、小程序、数据库等性价比高的服务</p>
+                <div class="site-tags">
+                    <span class="tag">云服务</span>
+                    <span class="tag">性价比</span>
+                    <span class="tag">国内</span>
+                </div>
+            </a>
+            
+            <a href="https://aws.amazon.com/" class="site-card">
+                <h3 class="site-title">AWS</h3>
+                <p class="site-description">亚马逊云服务，全球领先的云计算平台</p>
+                <div class="site-tags">
+                    <span class="tag">云计算</span>
+                    <span class="tag">全球</span>
+                    <span class="tag">企业级</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 开发者导航站 | 收集最实用的开发资源</p>
+            <p>如有好的资源推荐，请联系我们</p>
+        </div>
+    </footer>
+</body>
+</html>
