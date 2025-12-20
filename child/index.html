@@ -110,8 +110,14 @@ var expandAll = true;
     $('.sidebar-menu li a').click(function(e) {
       var targetHref = $(this).attr('href');
       
+      // 如果是返回主页的链接（如/#开发必备），则跳转到主页并带上锚点
+      if (targetHref.startsWith('/#')) {
+        e.preventDefault();
+        // 跳转到主页并带上锚点
+        window.location.href = targetHref;
+      }
       // 如果是锚点链接（以#开头），则平滑滚动到对应位置
-      if (targetHref.startsWith('#')) {
+      else if (targetHref.startsWith('#')) {
         e.preventDefault();
         var targetElement = $(targetHref);
         if (targetElement.length > 0) {
@@ -122,12 +128,6 @@ var expandAll = true;
           // 更新URL锚点
           window.location.hash = targetHref;
         }
-      }
-      // 如果是返回主页的链接（如/#开发必备），则跳转到主页并带上锚点
-      else if (targetHref.startsWith('/#')) {
-        e.preventDefault();
-        // 跳转到主页并带上锚点
-        window.location.href = targetHref;
       }
       // 如果是外部链接（如/about/），则直接跳转
       else if (targetHref.startsWith('/') || targetHref.startsWith('http')) {
