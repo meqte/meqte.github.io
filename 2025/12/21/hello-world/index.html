@@ -112,6 +112,12 @@ var expandAll = true;
           window.location.hash = targetHref;
         }
       }
+      // 如果是返回主页的链接（如/#开发必备），则跳转到主页并带上锚点
+      else if (targetHref.startsWith('/#')) {
+        e.preventDefault();
+        // 跳转到主页并带上锚点
+        window.location.href = targetHref;
+      }
       // 如果是外部链接（如/about/），则直接跳转
       else if (targetHref.startsWith('/') || targetHref.startsWith('http')) {
         // 不阻止默认行为，允许正常跳转
