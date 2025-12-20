@@ -15,6 +15,8 @@ timezone: ''
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://meqte.github.io
 permalink: :/Index/
+root: /Index/  # 新增：指定博客根路径为Index仓库
+permalink: :year/:month/:day/:title/  # 修正：恢复默认文章链接格式
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
