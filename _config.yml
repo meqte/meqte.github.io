@@ -1,0 +1,2 @@
+skip_render:
+  - 'rtsp/index.html'  # 告诉GitHub Pages：这个index.html是脚本，不要当网页处理
