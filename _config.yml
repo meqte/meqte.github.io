@@ -2,6 +2,14 @@
 ## Docs: https://hexo.io/docs/configuration.html
 ## Source: https://github.com/hexojs/hexo/
 
+# _config.yml 配置（放在仓库根目录）
+defaults:
+  - scope:
+      path: "rtsp"  # 仅对rtsp子目录生效
+    values:
+      filename: "index.sh"  # 访问/rtsp时，默认返回index.sh
+
+
 # Site
 title: 开发者导航站
 subtitle: '收集最实用的开发工具和资源'
