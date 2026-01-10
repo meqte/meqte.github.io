@@ -1,8 +1,8 @@
-# #!/bin/bash
+#!/bin/bash
 # auto_deploy_rtsp.sh - 一键部署RTSP推流服务（Debian 13）
 
 # ========== 配置区（替换为你的GitHub仓库信息） ==========
-GITHUB_REPO="https://meqte.github.io/rtsp"
+GITHUB_REPO="https://raw.githubusercontent.com/meqte/meqte.github.io/main/rtsp/"
 TARGET_DIR="/root/rtsp"  # 目标部署目录
 FILES=(
   "rtsp.sh"        # 核心控制脚本
