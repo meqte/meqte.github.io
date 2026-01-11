@@ -1,67 +1,38 @@
 #!/bin/bash
-# index.sh - 一键部署RTSP推流服务（适配你的GitHub仓库：https://github.com/meqte/sh/rtsp）
 
-# ========== 配置区（已适配你的仓库） ==========
+# 【重要：这是下载文件的原始链接前缀】
+# 注意路径里包含 /sh/rtsp
 GITHUB_RAW="https://raw.githubusercontent.com/meqte/meqte.github.io/main/sh/rtsp"
-# 需要下载的文件列表（对应你仓库里的文件）
-FILES=(
-  "rtsp.sh"        # 核心控制脚本
-  "mediamtx"       # RTSP服务器可执行文件
-  "mediamtx.yml"   # 配置文件
-  "OK-OK.txt"    # （可选）如果需要下载这个说明文件，就保留
-)
-# ========== 配置结束 ==========
+TARGET_DIR="/root/rtsp"
 
-
-# 1. 检查是否为root用户（部署需要root权限）
-if [ "$(id -u)" -ne 0 ]; then
-  echo "❌ 请用root用户执行（先运行 sudo -i 切换到root）"
-  exit 1
-fi
-
-
-# 2. 安装依赖工具（ffmpeg、wget等）
-# echo "🔧 安装必要依赖工具..."
-# apt update -y && apt install -y ffmpeg wget net-tools iproute2
-
-
-# 3. 创建目标目录（包含4K和logs子目录）
-echo "📂 创建部署目录：$TARGET_DIR"
+echo -e "\033[0;32m📂 正在初始化目录: $TARGET_DIR\033[0m"
 mkdir -p "$TARGET_DIR/4K" "$TARGET_DIR/logs"
 
+# 定义需要下载的文件名
+FILES=("rtsp.sh" "mediamtx" "mediamtx.yml")
 
-# 4. 下载所有文件（从你的GitHub仓库）
-echo "📥 下载RTSP相关文件..."
+echo -e "\033[0;32m📥 正在从 GitHub 下载组件...\033[0m"
+
 for FILE in "${FILES[@]}"; do
-  DOWNLOAD_URL="$GITHUB_REPO/$FILE"
-  SAVE_PATH="$TARGET_DIR/$FILE"
-  
-  # 下载文件
-  if wget -q -O "$SAVE_PATH" "$DOWNLOAD_URL"; then
-    echo "✅ 成功下载：$FILE"
-  else
-    echo "❌ 下载失败：$FILE（链接：$DOWNLOAD_URL）"
-    exit 1
-  fi
+    # 拼接绝对路径链接
+    DOWNLOAD_URL="${GITHUB_RAW}/${FILE}"
+    echo "正在下载: $FILE"
+    
+    # 使用 -L 处理重定向，-q 静默下载
+    wget -q -L -O "$TARGET_DIR/$FILE" "$DOWNLOAD_URL"
+    
+    if [ $? -ne 0 ]; then
+        echo -e "\033[0;31m❌ 下载失败: $FILE\033[0m"
+        echo "URL: $DOWNLOAD_URL"
+        exit 1
+    fi
 done
 
+# 赋予执行权限
+chmod +x "$TARGET_DIR/rtsp.sh"
+chmod +x "$TARGET_DIR/mediamtx"
 
-# 5. 配置执行权限
-echo "🔑 配置文件执行权限..."
-chmod +x "$TARGET_DIR/rtsp.sh" "$TARGET_DIR/mediamtx"
-
-
-# 6. 创建全局软链接（输入m即可运行rtsp.sh）
-echo "🔗 创建全局软链接..."
+# 创建全局软链接，让用户输入 'm' 就能用
 ln -sf "$TARGET_DIR/rtsp.sh" /usr/local/bin/m
 
-
-# 7. 部署完成提示
-echo -e "\n🎉 RTSP服务部署完成！"
-echo "📁 部署目录：$TARGET_DIR"
-echo "🔧 常用命令："
-echo "   - 启动服务：m start"
-echo "   - 停止服务：m stop"
-echo "   - 查看状态：m status"
-echo "   - 交互式菜单：直接输入 m"
-echo "💡 请将视频文件放到 $TARGET_DIR/4K/ 目录后，再启动服务！"
+echo -e "\033[0;32m✅ RTSP 组件安装成功！\033[0m"
