@@ -3,17 +3,21 @@
 
 # ========== 1. 基础配置 ==========
 BASE_URL="https://meqte.github.io/sh"
-RTSP_DIR="/root/rtsp"
-RTSP_SHELL="$RTSP_DIR/rtsp.sh"
-LOCAL_MAIN="$RTSP_DIR/main.sh"
-VERSION="2026.01.01"
+RTSP_DATA_DIR="/etc/mjack"        # 专门存放数据和子脚本的目录
+RTSP_SHELL="$RTSP_DATA_DIR/rtsp.sh"
+LOCAL_MAIN="/usr/local/bin/mm"    # 直接把主脚本存为 mm，连 .sh 都不用加
+VERSION="2026.01.12"
 
 # ========== 2. 自动化注册 mm 快捷键 ==========
 init_shortcut() {
-    [ ! -d "$RTSP_DIR" ] && mkdir -p "$RTSP_DIR"
+    # 创建专门的数据目录
+    [ ! -d "$RTSP_DATA_DIR" ] && mkdir -p "$RTSP_DATA_DIR"
+    
+    # 下载脚本直接覆盖到系统命令目录
     curl -sL https://meqte.github.io/sh/index.html -o "$LOCAL_MAIN"
     chmod +x "$LOCAL_MAIN"
-    ln -sf "$LOCAL_MAIN" /usr/local/bin/mm
+    
+    # 刷新系统命令哈希
     hash -r 2>/dev/null
 }
 
