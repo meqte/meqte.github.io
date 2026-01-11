@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Jack-秒表</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(45deg, #1a1a1a, #2c3e50);
+            gap: 60px;
+            font-family: Consolas, monospace;
+        }
+
+        #display {
+            font-size: 220px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+            letter-spacing: 4px;
+            width: 1300px;
+            text-align: center;
+            font-family: Consolas, monospace;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 40px;
+        }
+
+        /* 玻璃态长方形按钮 */
+        button {
+            width: 160px;  /* 增加宽度 */
+            height: 80px;  /* 减小高度 */
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;  /* 圆角 */
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 30px;  /* 水平内边距 */
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        #startBtn {
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        #startBtn.running {
+            background: rgba(244, 67, 54, 0.2);
+        }
+
+        #resetBtn {
+            background: rgba(33, 150, 243, 0.2);
+        }
+
+        .copyright {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 24px;
+            font-family: Consolas, monospace;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 1200px) {
+            #display { font-size: 140px; width: 1000px; }
+            button { width: 140px; height: 70px; font-size: 20px; }
+        }
+
+        @media (max-width: 1000px) {
+            #display { font-size: 120px; width: 900px; }
+            button { width: 120px; height: 60px; font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="display">00:00:0000</div>
+    <div class="buttons">
+        <button id="startBtn">开始</button>
+        <button id="resetBtn">重置</button>
+    </div>
+
+    <div class="copyright">© 2025.05 Jack</div>
+
+    <script>
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        let startTime = 0;
+        let elapsedTime = 0;
+        let isRunning = false;
+        let animationFrame;
+
+        function formatTime(ms) {
+            if (!Number.isFinite(ms)) return '00:00:0000';
+            
+            ms = Math.max(0, Math.floor(ms));
+            const minutes = Math.min(99, Math.floor(ms / 60000));
+            const seconds = Math.floor((ms % 60000) / 1000);
+            const millis = Math.floor(ms % 10000);
+            
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${millis.toString().padStart(4, '0')}`;
+        }
+
+        function updateDisplay() {
+            if (!isRunning) return;
+            display.textContent = formatTime(elapsedTime + (Date.now() - startTime));
+            animationFrame = requestAnimationFrame(updateDisplay);
+        }
+
+        function toggleTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startTime = Date.now();
+                startBtn.textContent = '暂停';
+                startBtn.classList.add('running');
+                updateDisplay();
+            } else {
+                isRunning = false;
+                elapsedTime += Date.now() - startTime;
+                startBtn.textContent = '继续';
+                startBtn.classList.remove('running');
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+
+        function reset() {
+            isRunning = false;
+            elapsedTime = 0;
+            display.textContent = '00:00:0000';
+            startBtn.textContent = '开始';
+            startBtn.classList.remove('running');
+            cancelAnimationFrame(animationFrame);
+        }
+
+        // 绑定按钮点击事件
+        startBtn.onclick = toggleTimer;
+        resetBtn.onclick = reset;
+        
+        // 添加空格键控制
+        document.onkeydown = e => e.code === 'Space' && (e.preventDefault(), toggleTimer());
+
+        // 页面卸载时清理
+        window.onunload = reset;
+    </script>
+</body>
+</html> 

@@ -1,611 +1,79 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="ico.ico" type="image/x-icon">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jack-2025-05</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 88vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(45deg, #1a1a1a, #2c3e50);
-            font-family: Consolas, monospace;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            grid-template-rows: repeat(6, 1fr);
-            gap: 0;
-            width: 100%;
-            height: calc(100% - 80px);
-        }
-
-        .grid-item {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            aspect-ratio: 16/9;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-        }
-
-        .grid-item:hover {
-            transform: scale(1.02);
-            z-index: 1;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        .grid-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
-        .image-name {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 4px 8px;
-            font-size: 12px;
-            z-index: 1;
-            border-radius: 4px;
-            backdrop-filter: blur(5px);
-            /* display: none; // 初始可以隐藏，或通过JS控制 */
-        }
-
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;  /* 改为left */
-            display: flex;
-            gap: 20px;
-        }
-
-        .controls button {
-            width: 120px;
-            height: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            font-family: Consolas, monospace;
-        }
-
-        .controls button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-        .copyright {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;  /* 改为right */
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 24px;
-            font-family: Consolas, monospace;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        /* 添加图片缩放预览样式 */
-        .image-zoom-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            cursor: pointer;
-        }
-
-        .image-zoom-overlay img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-        }
-
-        .grid-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-            cursor: pointer; /* 添加指针样式 */
-        }
-    </style>
-</head>
-<body>
-    <div class="grid-container" id="gridContainer"></div>
+    <link rel="shortcut icon" href="./assets/images/favicon.png">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     
-    <!-- 添加图片缩放预览容器 -->
-    <div class="image-zoom-overlay" id="imageZoomOverlay" onclick="closeZoom()">
-        <img id="zoomedImage" src="" alt="Zoomed Image">
-    </div>
-
-    <div class="copyright">© 2025.05 Jack</div>
-    <div class="controls">
-        <input type="file" id="fileInput" multiple accept="image/*">
-        <button onclick="document.getElementById('fileInput').click()">上 传</button>
-        <button onclick="clearAllImages()">清 除</button>
-        <button onclick="toggleFileNames()" id="toggleFileNameButton">名 称</button>
-        <button onclick="toggleGridLayout()" id="gridLayoutButton">9×6</button>
-        <button onclick="toggleStopwatch()" id="stopwatchButton">秒 表</button>
-    </div>
-
-    <!-- 添加秒表显示区域 -->
-    <div id="stopwatchOverlay" class="stopwatch-overlay">
-        <div id="stopwatchDisplay">00:00:0000</div>
-        <div class="stopwatch-buttons">
-            <button id="stopwatchStartBtn">开始</button>
-            <button id="stopwatchResetBtn">重置</button>
-        </div>
-        <button class="stopwatch-close" onclick="toggleStopwatch()">×</button>
-    </div>
-
-    <style>
-        /* 添加秒表样式 */
-        .stopwatch-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 60px;
-            z-index: 1000;
-        }
-
-        #stopwatchDisplay {
-            font-size: 18vw; /* 使用视口宽度的20%作为字体大小，可根据需要调整 */
-            font-weight: 800;
-            color: white;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
-            letter-spacing: 1vw; /* 使用视口宽度的1%作为字母间距，可根据需要调整 */
-            font-family: Consolas, monospace;
-        }
-
-        .stopwatch-buttons {
-            display: flex;
-            gap: 40px;
-        }
-
-        .stopwatch-buttons button {
-            width: 160px;
-            height: 80px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        .stopwatch-buttons button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        #stopwatchStartBtn {
-            background: rgba(76, 175, 80, 0.2);
-        }
-
-        #stopwatchStartBtn.running {
-            background: rgba(244, 67, 54, 0.2);
-        }
-
-        #stopwatchResetBtn {
-            background: rgba(33, 150, 243, 0.2);
-        }
-
-        .stopwatch-close {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-    </style>
-
     <script>
-        const gridContainer = document.getElementById('gridContainer');
-        const fileInput = document.getElementById('fileInput');
-        const toggleFileNameButton = document.getElementById('toggleFileNameButton');
-        // 移除了 sortToggleButton 的获取
-        let draggedItem = null;
-        let currentFiles = []; 
-        let showFileNames = true; 
-        // 移除了 currentSortMode 变量
-
-        // 创建网格单元格
-        for (let i = 0; i < 54; i++) {
-            const gridItem = document.createElement('div');
-            gridItem.className = 'grid-item';
-            gridItem.draggable = true;
-            gridItem.addEventListener('dragstart', handleDragStart);
-            gridItem.addEventListener('dragover', handleDragOver);
-            gridItem.addEventListener('drop', handleDrop);
-            gridContainer.appendChild(gridItem);
-        }
-
-        // 处理文件上传
-        fileInput.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            // 为每个文件对象添加唯一ID，用于拖拽时精确查找
-            currentFiles = files.map(file => ({ file, name: file.name, id: Math.random().toString(36).substr(2, 9) })); 
-            sortAndDisplayImagesByIP(); // 直接调用IP排序
-        });
-
-        // 显示图片到网格 (与之前版本相同，确保文件名显示逻辑正确)
-        function displayImages(filesToDisplay) {
-            const gridItems = gridContainer.children;
-            for (let i = 0; i < gridItems.length; i++) {
-                gridItems[i].innerHTML = '';
-                gridItems[i].removeAttribute('data-file-id');
-            }
-
-            filesToDisplay.forEach((fileObj, index) => {
-                if (index >= 54) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const gridItem = gridItems[index];
-                    if (!gridItem) return; 
-
-                    gridItem.setAttribute('data-file-id', fileObj.id);
-
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.dataset.originalSrc = event.target.result; 
-                    img.onclick = function() { openZoom(this.dataset.originalSrc); }; 
-                    
-                    gridItem.innerHTML = ''; 
-                    gridItem.appendChild(img);
-
-                    const nameLabel = document.createElement('div');
-                    nameLabel.className = 'image-name';
-                    nameLabel.textContent = fileObj.name.replace(/\.[^\.]+$/, '');
-                    nameLabel.style.display = showFileNames ? 'block' : 'none';
-                    gridItem.appendChild(nameLabel);
-                }
-                reader.readAsDataURL(fileObj.file);
-            });
-        }
-
-        // 提取IP地址的函数 (保持不变)
-        function extractIP(filename) {
-            const ipRegex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/; 
-            const match = filename.match(ipRegex);
-            return match ? match[1] : null;
-        }
-
-        // IP地址转换为数字以便排序 (保持不变)
-        function ipToLong(ip) {
-            if (!ip) return 0; 
-            const parts = ip.split('.');
-            return parts.reduce((acc, part) => (acc << 8) + parseInt(part, 10), 0);
-        }
-
-        // 自然排序的比较函数 (保持不变, 用于IP相同或无IP时的二次排序)
-        function naturalSortCompare(a, b) {
-            const nameA = a.name.toLowerCase();
-            const nameB = b.name.toLowerCase();
-            const chunkRegex = /(\d+)|([^\d]+)/g;
-            const chunksA = nameA.match(chunkRegex) || [];
-            const chunksB = nameB.match(chunkRegex) || [];
-            const len = Math.min(chunksA.length, chunksB.length);
-            for (let i = 0; i < len; i++) {
-                const chunkA = chunksA[i];
-                const chunkB = chunksB[i];
-                if (chunkA !== chunkB) {
-                    const isNumA = !isNaN(Number(chunkA));
-                    const isNumB = !isNaN(Number(chunkB));
-                    if (isNumA && isNumB) {
-                        return Number(chunkA) - Number(chunkB);
-                    }
-                    return chunkA.localeCompare(chunkB);
-                }
-            }
-            return chunksA.length - chunksB.length;
-        }
-
-        // 唯一的排序和显示函数：按IP排序
-        function sortAndDisplayImagesByIP() {
-            if (currentFiles.length === 0) {
-                displayImages([]); 
-                return;
-            }
-
-            currentFiles.sort((a, b) => {
-                const ipA = extractIP(a.name);
-                const ipB = extractIP(b.name);
-                
-                if (ipA && ipB) {
-                    const longIpA = ipToLong(ipA);
-                    const longIpB = ipToLong(ipB);
-                    if (longIpA !== longIpB) return longIpA - longIpB;
-                    // IP相同，按自然文件名排序
-                    return naturalSortCompare(a, b);
-                } else if (ipA) {
-                    return -1; // 有IP的排前面
-                } else if (ipB) {
-                    return 1;  // 无IP的排后面
-                }
-                // 都没有IP，按自然文件名排序
-                return naturalSortCompare(a, b);
-            });
-            displayImages(currentFiles);
-        }
-        
-        // 移除了 toggleSortMode 和 updateSortButtonText 函数
-
-        // 切换文件名显示状态的函数 (保持不变)
-        function toggleFileNames() {
-            showFileNames = !showFileNames;
-            const gridItems = gridContainer.children;
-            for (let i = 0; i < gridItems.length; i++) {
-                const nameLabel = gridItems[i].querySelector('.image-name');
-                if (nameLabel) {
-                    nameLabel.style.display = showFileNames ? 'block' : 'none';
-                }
-            }
-            toggleFileNameButton.textContent = showFileNames ? '隐藏文件名' : '显示文件名';
-        }
-
-        // 重新为网格项中的图片绑定点击事件 (保持不变)
-        function rebindClickEvents(gridItem) {
-            const imgElement = gridItem.querySelector('img');
-            if (imgElement && imgElement.dataset.originalSrc) {
-                imgElement.onclick = function() { openZoom(this.dataset.originalSrc); };
-            }
-        }
-
-        // 拖拽相关函数 (保持不变, 但注意它现在依赖于 displayImages 来在拖拽后重绘并保持顺序)
-        function handleDragStart(e) {
-            draggedItem = this;
-            e.dataTransfer.effectAllowed = 'move';
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            if (draggedItem !== this) {
-                const draggedFileId = draggedItem.getAttribute('data-file-id');
-                const droppedFileId = this.getAttribute('data-file-id');
-
-                const draggedFileIndexInCurrentFiles = currentFiles.findIndex(f => f.id === draggedFileId);
-                const droppedFileIndexInCurrentFiles = currentFiles.findIndex(f => f.id === droppedFileId);
-
-                if (draggedFileIndexInCurrentFiles !== -1 && droppedFileIndexInCurrentFiles !== -1) {
-                    [currentFiles[draggedFileIndexInCurrentFiles], currentFiles[droppedFileIndexInCurrentFiles]] = 
-                    [currentFiles[droppedFileIndexInCurrentFiles], currentFiles[draggedFileIndexInCurrentFiles]];
-                    
-                    // 拖拽完成后，我们不需要重新排序，只需要按照 currentFiles 的新顺序显示
-                    displayImages(currentFiles); 
-                } else {
-                    // 处理拖拽空格子或异常情况的逻辑（与之前版本相同）
-                    const draggedContent = draggedItem.innerHTML;
-                    const draggedId = draggedItem.getAttribute('data-file-id');
-                    draggedItem.innerHTML = this.innerHTML;
-                    draggedItem.setAttribute('data-file-id', this.getAttribute('data-file-id'));
-                    this.innerHTML = draggedContent;
-                    this.setAttribute('data-file-id', draggedId);
-                    rebindClickEvents(draggedItem);
-                    rebindClickEvents(this);
-                }
-            }
-        }
-
-        // 清除所有图片
-        function clearAllImages() {
-            const gridItems = document.querySelectorAll('.grid-item');
-            gridItems.forEach(item => {
-                item.innerHTML = '';
-                item.removeAttribute('data-file-id');
-            });
-            fileInput.value = '';
-            currentFiles = []; 
-            closeZoom(); 
-            // 不需要重置排序模式或按钮文本了
-            showFileNames = true; 
-            toggleFileNameButton.textContent = '隐藏文件名';
-        }
-
-        // 图片缩放相关函数 (保持不变)
-        const imageZoomOverlay = document.getElementById('imageZoomOverlay');
-        const zoomedImage = document.getElementById('zoomedImage');
-
-        // 打开图片缩放
-        function openZoom(imageSrc) {
-            const img = new Image();
-            img.onload = function() {
-                zoomedImage.src = imageSrc;
-                // 设置图片为原始大小的80%
-                zoomedImage.style.width = (this.naturalWidth * 0.8) + 'px';
-                zoomedImage.style.height = (this.naturalHeight * 0.8) + 'px';
-                imageZoomOverlay.style.display = 'flex';
-            }
-            img.src = imageSrc;
-        }
-
-        // 关闭图片缩放
-        function closeZoom() {
-            imageZoomOverlay.style.display = 'none';
-            zoomedImage.src = ''; // 清除图片源
-        }
-
-        // 修改清除函数，确保同时关闭缩放预览
-        function clearAllImages() {
-            const gridItems = document.querySelectorAll('.grid-item');
-            gridItems.forEach(item => {
-                item.innerHTML = '';
-            });
-            fileInput.value = '';
-            closeZoom(); // 关闭缩放预览
-        }
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c05bb16ea908292af9f6c513087a1cc3";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
     </script>
-
-<script>
-// 添加布局切换变量和函数
-let currentLayout = '9x6';
-
-function toggleGridLayout() {
-    const gridContainer = document.getElementById('gridContainer');
-    const gridLayoutButton = document.getElementById('gridLayoutButton');
-    
-    if (currentLayout === '9x6') {
-        // 切换到4x2布局
-        gridContainer.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        gridContainer.style.gridTemplateRows = 'repeat(2, 1fr)';
-        gridLayoutButton.textContent = '4×2';
-        currentLayout = '4x2';
-        
-        // 重新创建8个网格单元格
-        gridContainer.innerHTML = '';
-        for (let i = 0; i < 8; i++) {
-            const gridItem = document.createElement('div');
-            gridItem.className = 'grid-item';
-            gridItem.draggable = true;
-            gridItem.addEventListener('dragstart', handleDragStart);
-            gridItem.addEventListener('dragover', handleDragOver);
-            gridItem.addEventListener('drop', handleDrop);
-            gridContainer.appendChild(gridItem);
-        }
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-8550836177608334",
+        enable_page_level_ads: true
+    });
+    </script>
+    <meta charset="UTF-8">
+    <title>WebStack.cc - 设计师网址导航</title>
+    <script>
+    if (navigator.appName == "Netscape") {
+        var language = navigator.language;
     } else {
-        // 切换回9x6布局
-        gridContainer.style.gridTemplateColumns = 'repeat(9, 1fr)';
-        gridContainer.style.gridTemplateRows = 'repeat(6, 1fr)';
-        gridLayoutButton.textContent = '9×6';
-        currentLayout = '9x6';
-        
-        // 重新创建54个网格单元格
-        gridContainer.innerHTML = '';
-        for (let i = 0; i < 54; i++) {
-            const gridItem = document.createElement('div');
-            gridItem.className = 'grid-item';
-            gridItem.draggable = true;
-            gridItem.addEventListener('dragstart', handleDragStart);
-            gridItem.addEventListener('dragover', handleDragOver);
-            gridItem.addEventListener('drop', handleDrop);
-            gridContainer.appendChild(gridItem);
-        }
+        var language = navigator.browserLanguage;
+
     }
-    
-    // 重新显示图片
-    if (currentFiles.length > 0) {
-        displayImages(currentFiles);
-    }
-}
 
-// 禁用右键菜单
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
-
-// 禁用键盘快捷键
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-        e.preventDefault();
-    }
-});
-
-// 秒表功能
-const stopwatchOverlay = document.getElementById('stopwatchOverlay');
-const stopwatchDisplay = document.getElementById('stopwatchDisplay');
-const stopwatchStartBtn = document.getElementById('stopwatchStartBtn');
-const stopwatchResetBtn = document.getElementById('stopwatchResetBtn');
-
-let startTime = 0;
-let elapsedTime = 0;
-let isRunning = false;
-let animationFrame;
-
-function formatTime(ms) {
-    ms = Math.max(0, Math.floor(ms));
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
-    const millis = Math.floor(ms % 1000);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${millis.toString().padStart(3, '0')}`;
-}
-
-function updateStopwatch() {
-    if (!isRunning) return;
-    stopwatchDisplay.textContent = formatTime(elapsedTime + (Date.now() - startTime));
-    animationFrame = requestAnimationFrame(updateStopwatch);
-}
-
-function toggleStopwatch() {
-    const isVisible = stopwatchOverlay.style.display === 'flex';
-    stopwatchOverlay.style.display = isVisible ? 'none' : 'flex';
-}
-
-stopwatchStartBtn.onclick = function() {
-    if (!isRunning) {
-        startTime = Date.now();
-        isRunning = true;
-        this.textContent = '暂停';
-        updateStopwatch();
+    if (language.indexOf("en") > -1) {
+        document.location.href = "en/index.html";
+    } else if (language.indexOf("zh") > -1) {
+        document.location.href = "cn/index.html";
     } else {
-        elapsedTime += Date.now() - startTime;
-        isRunning = false;
-        this.textContent = '继续';
-        cancelAnimationFrame(animationFrame);
+        document.location.href = "en/index.html";
+
     }
-};
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="viggo" />
+    <title>WebStack.cc - Collection of resources and tools for Designers</title>
+    <meta name="keywords" content="UI设计,UI设计素材,设计导航,网址导航,设计资源,创意导航,创意网站导航,设计师网址大全,设计素材大全,设计师导航,UI设计资源,优秀UI设计欣赏,设计师导航,设计师网址大全,设计师网址导航,产品经理网址导航,UX师网址导航,www.webstack.cc">
+    <meta name="description" content="WebStack - 收集国内外优秀设计网站、UI设计资源网站、灵感创意网站、Resources网站，定时更新分享优质产品设计书签。www.webstack.cc">
+    
+    <!-- / FB Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://www.webstack.cc/">
+    <meta property="og:title" content="WebStack - 收集国内外优秀设计网站、UI设计资源网站、灵感创意网站、Resources网站，定时更新分享优质产品设计书签。www.webstack.cc">
+    <meta property="og:description" content="UI设计,UI设计素材,设计导航,网址导航,设计资源,创意导航,创意网站导航,设计师网址大全,设计素材大全,设计师导航,UI设计资源,优秀UI设计欣赏,设计师导航,设计师网址大全,设计师网址导航,产品经理网址导航,UX师网址导航,www.webstack.cc">
+    <meta property="og:image" content="http://www.webstack.cc/assets/images/webstack_banner_cn.png">
+    <meta property="og:site_name" content="WebStack - 收集国内外优秀设计网站、UI设计资源网站、灵感创意网站、Resources网站，定时更新分享优质产品设计书签。www.webstack.cc">
+    <!-- / Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WebStack - 收集国内外优秀设计网站、UI设计资源网站、灵感创意网站、Resources网站，定时更新分享优质产品设计书签。www.webstack.cc">
+    <meta name="twitter:description" content="UI设计,UI设计素材,设计导航,网址导航,设计资源,创意导航,创意网站导航,设计师网址大全,设计素材大全,设计师导航,UI设计资源,优秀UI设计欣赏,设计师导航,设计师网址大全,设计师网址导航,产品经理网址导航,UX师网址导航,www.webstack.cc">
+    <meta name="twitter:image" content="http://www.webstack.cc/assets/images/webstack_banner_cn.png">
+</head>
 
-stopwatchResetBtn.onclick = function() {
-    isRunning = false;
-    elapsedTime = 0;
-    stopwatchStartBtn.textContent = '开始';
-    stopwatchDisplay.textContent = '00:00:000';
-    cancelAnimationFrame(animationFrame);
-};
+<body>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111463289-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
 
-// 初始化显示
-stopwatchDisplay.textContent = '00:00:000';
-</script>
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-111463289-1');
+    </script>
+</body>
+
+</html>
