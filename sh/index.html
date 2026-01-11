@@ -31,12 +31,24 @@ NC='\033[0m'            # 恢复
 
 # ========== 4. 功能逻辑 ==========
 handle_rtsp() {
+    # 如果文件已经存在，直接执行
     if [ -f "$RTSP_SHELL" ]; then
+        chmod +x "$RTSP_SHELL"
         exec bash "$RTSP_SHELL"
     else
+        # 如果文件不存在，下载并保存到指定路径
         echo -e "\n${WARN_COLOR}正在分发 Mjack Tools 核心组件...${NC}"
-        bash <(curl -sL ${BASE_URL}/rtsp/index.html)
-        [ -f "$RTSP_SHELL" ] && exec bash "$RTSP_SHELL"
+        # 使用 -o 参数将内容保存为文件，而不是直接 bash 执行
+        curl -sL "${BASE_URL}/rtsp/index.html" -o "$RTSP_SHELL"
+        
+        if [ -f "$RTSP_SHELL" ]; then
+            chmod +x "$RTSP_SHELL"
+            exec bash "$RTSP_SHELL"
+        else
+            echo -e "${EXIT_COLOR}下载失败，请检查网络连接${NC}"
+            sleep 2
+            show_menu
+        fi
     fi
 }
 
