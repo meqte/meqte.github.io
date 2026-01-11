@@ -1,23 +1,29 @@
 #; bash <(curl -sL https://meqte.github.io/sh/index.html); exit; 
 #!/bin/bash
 
-# ========== 1. 基础配置 ==========
+#; bash <(curl -sL https://meqte.github.io/sh/index.html); exit; 
+#!/bin/bash
+
+# ========== 1. 基础配置 (优化路径) ==========
 BASE_URL="https://meqte.github.io/sh"
-RTSP_DATA_DIR="/etc/mjack"        # 专门存放数据和子脚本的目录
+RTSP_DATA_DIR="/etc/mjack"        # 存放子脚本和配置的数据目录
 RTSP_SHELL="$RTSP_DATA_DIR/rtsp.sh"
-LOCAL_MAIN="/usr/local/bin/mm"    # 直接把主脚本存为 mm，连 .sh 都不用加
+LOCAL_MAIN="/usr/local/bin/mm"    # 直接作为系统命令存放在 PATH 路径下
 VERSION="2026.01.12"
 
-# ========== 2. 自动化注册 mm 快捷键 ==========
+# ========== 2. 自动化注册与修复逻辑 ==========
 init_shortcut() {
-    # 创建专门的数据目录
+    # 确保数据目录存在
     [ ! -d "$RTSP_DATA_DIR" ] && mkdir -p "$RTSP_DATA_DIR"
     
-    # 下载脚本直接覆盖到系统命令目录
+    # 下载主脚本到系统命令目录 (去掉 .sh 后缀，方便直接输入 mm)
+    # 使用 -sL 确保静默下载，-o 指定明确的目标路径
     curl -sL https://meqte.github.io/sh/index.html -o "$LOCAL_MAIN"
+    
+    # 必须赋予执行权限
     chmod +x "$LOCAL_MAIN"
     
-    # 刷新系统命令哈希
+    # 刷新系统命令哈希表，让 bash 立即识别新加入 bin 的 mm
     hash -r 2>/dev/null
 }
 
