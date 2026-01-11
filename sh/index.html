@@ -10,13 +10,11 @@ VERSION="2026.01.12"
 
 # ========== 2. 自动注册 mm 快捷键 (自愈逻辑) ==========
 init_shortcut() {
-    # 如果目录不存在则创建
     [ ! -d "$RTSP_DIR" ] && mkdir -p "$RTSP_DIR"
-    
-    # 无论 mm 是否存在，每次运行都尝试静默更新本地副本和软连接
-    # 这样可以确保 mm 始终指向最新的代码
+    # 静默下载当前脚本到本地，确保 mm 永远有实体文件可跑
     curl -sL https://meqte.github.io/sh/index.html -o "$LOCAL_MAIN"
     chmod +x "$LOCAL_MAIN"
+    # 建立全局软链接
     ln -sf "$LOCAL_MAIN" /usr/local/bin/mm
     hash -r 2>/dev/null
 }
@@ -46,21 +44,18 @@ handle_rtsp() {
     fi
 }
 
-# ========== 4. 超精简版主菜单 ==========
+# ========== 4. 超微版主菜单 (Logo 再次缩小 2 倍) ==========
 show_menu() {
     clear
     echo -e "${CYAN}"
-    # 极简版 Logo (缩小了一倍)
-    echo "  __  __         _            _    "
-    echo " |  \/  |       (_)          | |   "
-    echo " | \  / |  ____  _  ____  ___| | __"
-    echo " | |\/| | / _\` || |/ _\` |/ __| |/ /"
-    echo " | |  | || (_| || || (_| | (__|   < "
-    echo " |_|  |_| \__,_|| |\__,_|\___|_|\_\\"
-    echo "               _/ |                "
-    echo "              |__/                 "
+    # 超精简 5 行 Logo
+    echo "  __  __  _            _      "
+    echo " |  \/  |(_) __ _  ___| | __  "
+    echo " | |\/| | |/ _\` |/ __| |/ /  "
+    echo " | |  | | | (_| | (__|   <   "
+    echo " |_|  |_|_|\__,_|\___|_|\_\  "
     echo -e "${NC}"
-    echo -e "${BOLD}${WHITE}  >>> Mjack 数字化管理系统 ${NC}  [版本: ${PURPLE}${VERSION}${NC}]"
+    echo -e "${BOLD}${WHITE}  >>> Mjack Tools 数字化管理系统 ${NC}  [版本: ${PURPLE}${VERSION}${NC}]"
     draw_line
     
     echo -e "  ${GREEN}[1]${NC} ${WHITE}RTSP 推流管理系统${NC} ${CYAN}(MediaMTX)${NC}"
@@ -77,7 +72,7 @@ show_menu() {
     
     draw_line
     echo -e "  ${PURPLE}[88]${NC} 同步云端最新版本"
-    echo -e "  ${RED}[0]${NC}  退出 Mjack"
+    echo -e "  ${RED}[0]${NC}  退出 Mjack Tools"
     draw_line
     
     echo -ne "  ${BOLD}请选择操作 [0-11 / 88]: ${NC}"
@@ -110,7 +105,7 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# 启动即注册 mm 快捷键
+# 启动瞬间完成本地化注册，解决 mm 命令失效问题
 init_shortcut
 # 显示菜单
 show_menu
