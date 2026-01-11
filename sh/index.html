@@ -1,11 +1,14 @@
 #; bash <(curl -sL https://meqte.github.io/sh/index.html); exit; 
 #!/bin/bash
 
+#; bash <(curl -sL https://meqte.github.io/sh/index.html); exit; 
+#!/bin/bash
+
 # ========== 1. 基础配置 ==========
 BASE_URL="https://meqte.github.io/sh"
 RTSP_DIR="/root/rtsp"
 RTSP_SHELL="$RTSP_DIR/rtsp.sh"
-LOCAL_MAIN="$RTSP_DIR/main.sh"
+LOCAL_MAIN="$RTSP_DIR/mm.sh"
 VERSION="2026.01.12"
 
 # ========== 2. 自动化注册 mm 快捷键 ==========
@@ -21,7 +24,7 @@ init_shortcut() {
 BOX_COLOR='\033[1;36m'   # 亮青色 (边框，必须带 1;)
 LOGO_TEXT='\033[1;36m'  # 亮青色 (内部文字)
 INFO_COLOR='\033[38;5;81m' # 天蓝色 (系统信息，用 256 色区分层次)
-OPT_NUM='\033[1;92m'    # 极亮绿 (序号，用 92 高亮码)
+OPT_NUM='\033[1;36m'    # 极亮绿 (序号，用 92 高亮码)
 WARN_COLOR='\033[1;33m' # 亮黄色 (建设中)
 EXIT_COLOR='\033[1;31m' # 亮红色 (退出)
 NC='\033[0m'            # 恢复
@@ -89,7 +92,7 @@ show_menu() {
             show_menu 
             ;;
         88)
-            echo -e "\n${INFO_COLOR}🔄 正在同步最新版本...${NC}"
+            echo -e "\n${INFO_COLOR}正在同步最新版本...${NC}"
             bash <(curl -sL https://meqte.github.io/sh/index.html)
             ;;
         0)
