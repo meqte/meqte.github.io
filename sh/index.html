@@ -27,32 +27,34 @@ WARN_COLOR='\033[1;33m'
 EXIT_COLOR='\033[1;31m' 
 NC='\033[0m'            
 
-# ========== 4. 远程调用函数 (修复版) ==========
+# ========== 4. 远程调用函数 (智能优化版) ==========
 call_remote() {
-    echo -e "\n${INFO_COLOR}正在调用组件: $1 ...${NC}"
+    local cmd="$1"
+    echo -e "\n${INFO_COLOR}正在调用组件: $cmd ...${NC}"
     
     # 运行远程脚本
-    bash <(curl -sL "$KJ_URL") "$1"
+    bash <(curl -sL "$KJ_URL") "$cmd"
     
-    # --- 关键修复：增加手动按键确认 ---
-    echo -e "\n${WARN_COLOR}------------------------------------------"
-    echo -e " ${INFO_COLOR}操作已完成。按 [回车键] 返回主菜单...${NC}"
-    echo -e "${WARN_COLOR}------------------------------------------${NC}"
-    read -p ""  # 等待用户输入回车
+    # --- 智能判断是否需要停顿 ---
+    # 如果是 info(系统信息), update(更新), clean(清理), bbr 等直接输出结果的
+    # 我们才手动加一个 read 暂停。
+    # 如果是 docker, store(应用市场) 等自带菜单的，就不加暂停。
+    
+    case "$cmd" in
+        info|update|clean|bbr|test|warp)
+            echo -e "\n${WARN_COLOR}------------------------------------------"
+            echo -e " ${INFO_COLOR}操作已完成。按 [回车键] 返回主菜单...${NC}"
+            echo -e "${WARN_COLOR}------------------------------------------${NC}"
+            read -p "" 
+            ;;
+        *)
+            # 其他自带交互的模块，稍微停 1 秒直接回主菜单，防止两次回车冲突
+            sleep 1
+            ;;
+    esac
     
     show_menu
 }
-handle_rtsp() {
-    if [ -f "$RTSP_SHELL" ]; then
-        bash "$RTSP_SHELL"
-    else
-        echo -e "\n${WARN_COLOR}本地 RTSP 组件未安装，正在启动分发脚本...${NC}"
-        bash <(curl -sL "${BASE_URL}/rtsp/index.html")
-        [ -f "$RTSP_SHELL" ] && bash "$RTSP_SHELL"
-    fi
-    show_menu 
-}
-
 # ========== 5. 菜单界面 ==========
 show_menu() {
     clear
