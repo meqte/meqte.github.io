@@ -4,17 +4,17 @@
 BASE_URL="https://meqte.github.io/sh"
 RTSP_DIR="/root/rtsp"            # 修改：指向 rtsp 专用目录
 RTSP_SHELL="$RTSP_DIR/rtsp.sh"   # 修改：确保这里和子脚本下载位置完全对齐
-LOCAL_MAIN="/root/mm.sh"
+LOCAL_MAIN="/root/m.sh"
 VERSION="2026.01.15"
 
-# ========== 2. 自动化注册 mm 快捷键 ==========
+# ========== 2. 自动化注册 m 快捷键 ==========
 init_shortcut() {
     # 只有当快捷键不存在或者文件不存在时才下载，避免重复下载主脚本
     if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/mm" ]; then
         [ ! -d "/root" ] && mkdir -p "/root"
         curl -sL "${BASE_URL}/index.html" -o "$LOCAL_MAIN"
         chmod +x "$LOCAL_MAIN"
-        ln -sf "$LOCAL_MAIN" /usr/local/bin/mm
+        ln -sf "$LOCAL_MAIN" /usr/local/bin/m
         hash -r 2>/dev/null
     fi
 }
@@ -97,7 +97,7 @@ show_menu() {
             echo -e "\n${INFO_COLOR}正在同步最新版本...${NC}"
             curl -sL "${BASE_URL}/index.html" -o "$LOCAL_MAIN"
             chmod +x "$LOCAL_MAIN"
-            echo -e "${GREEN}同步完成！请重新运行 mm${NC}"
+            echo -e "${GREEN}同步完成！请重新运行 m${NC}"
             exit 0
             ;;
         0)

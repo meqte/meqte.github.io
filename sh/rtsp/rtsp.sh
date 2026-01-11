@@ -1,7 +1,7 @@
 #!/bin/sh
 # 定义源脚本路径和软链接目标路径
 SCRIPT_SRC="/root/rtsp/rtsp.sh"
-LINK_DST="/usr/local/bin/m"
+LINK_DST="/usr/local/bin/r"
 
 # 检查软链接是否已存在，不存在则创建
 if [ ! -L "${LINK_DST}" ]; then
