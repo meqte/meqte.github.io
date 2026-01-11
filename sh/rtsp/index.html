@@ -5,13 +5,13 @@
 GITHUB_RAW="https://raw.githubusercontent.com/meqte/meqte.github.io/main/sh/rtsp"
 TARGET_DIR="/root/rtsp"
 
-echo -e "\033[0;32m📂 正在初始化目录: $TARGET_DIR\033[0m"
+echo -e "\033[0;32m 正在初始化目录: $TARGET_DIR\033[0m"
 mkdir -p "$TARGET_DIR/4K" "$TARGET_DIR/logs"
 
 # 定义需要下载的文件名
 FILES=("rtsp.sh" "mediamtx" "mediamtx.yml")
 
-echo -e "\033[0;32m📥 正在从 GitHub 下载组件...\033[0m"
+echo -e "\033[0;32m 正在从 GitHub 下载组件...\033[0m"
 
 for FILE in "${FILES[@]}"; do
     # 拼接绝对路径链接
@@ -22,7 +22,7 @@ for FILE in "${FILES[@]}"; do
     wget -q -L -O "$TARGET_DIR/$FILE" "$DOWNLOAD_URL"
     
     if [ $? -ne 0 ]; then
-        echo -e "\033[0;31m❌ 下载失败: $FILE\033[0m"
+        echo -e "\033[0;31m 下载失败: $FILE\033[0m"
         echo "URL: $DOWNLOAD_URL"
         exit 1
     fi
@@ -35,4 +35,4 @@ chmod +x "$TARGET_DIR/mediamtx"
 # 创建全局软链接，让用户输入 'm' 就能用
 ln -sf "$TARGET_DIR/rtsp.sh" /usr/local/bin/m
 
-echo -e "\033[0;32m✅ RTSP 组件安装成功！\033[0m"
+echo -e "\033[0;32m RTSP 组件安装成功！\033[0m"
