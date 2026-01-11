@@ -22,10 +22,10 @@ fi
 # 处理RTSP模块逻辑
 handle_rtsp() {
     if [ -f "$RTSP_SHELL" ]; then
-        echo -e "${GREEN}✅ 检测到 RTSP 工具已安装，正在启动管理面板...${NC}"
+        echo -e "${GREEN} 检测到 RTSP 工具已安装，正在启动管理面板...${NC}"
         bash "$RTSP_SHELL"
     else
-        echo -e "${YELLOW}📡 本地未检测到组件，正在从云端获取安装程序...${NC}"
+        echo -e "${YELLOW} 本地未检测到组件，正在从云端获取安装程序...${NC}"
         # 核心：调用子目录下的安装脚本
         bash <(curl -sL ${BASE_URL}/rtsp/index.html)
         
@@ -33,7 +33,7 @@ handle_rtsp() {
         if [ -f "$RTSP_SHELL" ]; then
             bash "$RTSP_SHELL"
         else
-            echo -e "${RED}❌ 安装失败，请检查 GitHub 网络连接或路径配置。${NC}"
+            echo -e "${RED} 安装失败，请检查 GitHub 网络连接或路径配置。${NC}"
             read -p "按回车键返回菜单..."
             show_menu
         fi
@@ -42,14 +42,14 @@ handle_rtsp() {
 
 show_menu() {
     clear
-    echo -e "${BLUE}===========================================${NC}"
-    echo -e "${GREEN}       欢迎使用 Meqte 一键工具箱           ${NC}"
-    echo -e "${BLUE}===========================================${NC}"
+    echo -e "${BLUE}=================================${NC}"
+    echo -e "${GREEN}       Mjack 一键工具箱          ${NC}"
+    echo -e "${BLUE}=================================${NC}"
     echo -e "  1. RTSP 推流服务器 (MediaMTX + FFmpeg)"
     echo -e "  2. 检查系统负载 (示例功能)"
     echo -e "  3. 建设中..."
     echo -e "  q. 退出脚本"
-    echo -e "${BLUE}===========================================${NC}"
+    echo -e "${BLUE}==================================${NC}"
     read -p "请输入数字选择: " choice
 
     case $choice in
