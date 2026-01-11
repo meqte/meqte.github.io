@@ -8,23 +8,25 @@ RTSP_SHELL="$RTSP_DIR/rtsp.sh"
 LOCAL_MAIN="$RTSP_DIR/main.sh"
 VERSION="2026.01.12"
 
-# ========== 2. 核心修复：mm 快捷键安装 ==========
-# 确保目录存在
-mkdir -p "$RTSP_DIR"
-
-# 自动自愈：如果本地没有 main.sh，或者 mm 链接断了，强制重新安装
-if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/mm" ]; then
-    # 抓取当前脚本保存到本地，作为 mm 的实体文件
-    curl -sL https://meqte.github.io/sh/index.html -o "$LOCAL_MAIN"
-    chmod +x "$LOCAL_MAIN"
-    # 创建软链接
-    ln -sf "$LOCAL_MAIN" /usr/local/bin/mm
-fi
+# ========== 2. 【核心修复】自动初始化快捷键 ==========
+# 只要脚本被运行，就确保 mm 命令存在
+init_shortcut() {
+    if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/mm" ]; then
+        mkdir -p "$RTSP_DIR"
+        # 抓取当前脚本保存到本地硬盘
+        curl -sL https://meqte.github.io/sh/index.html -o "$LOCAL_MAIN"
+        chmod +x "$LOCAL_MAIN"
+        # 强制创建/更新软链接
+        ln -sf "$LOCAL_MAIN" /usr/local/bin/mm
+        # 刷新哈希表确保 mm 立即生效
+        hash -r 2>/dev/null
+    fi
+}
 
 # ========== 3. 样式定义 ==========
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
+YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
@@ -38,28 +40,28 @@ draw_line() {
 
 handle_rtsp() {
     if [ -f "$RTSP_SHELL" ]; then
-        # 如果已安装，瞬间跳转
+        # 已安装则瞬间跳转
         exec bash "$RTSP_SHELL"
     else
-        echo -e "\n${YELLOW}📡 正在从云端下载 Mjack-RTSP 模块...${NC}"
+        echo -e "\n${YELLOW}📡 正在分发 Mjack-RTSP 核心组件...${NC}"
         bash <(curl -sL ${BASE_URL}/rtsp/index.html)
         [ -f "$RTSP_SHELL" ] && exec bash "$RTSP_SHELL"
     fi
 }
 
-# ========== 4. 主菜单 (Logo 已缩小 1/3) ==========
+# ========== 4. 主菜单 (Logo 缩小 1/3) ==========
 show_menu() {
     clear
     echo -e "${CYAN}"
-    # 缩小后的精简版 Logo
+    # 缩小后的紧凑 Logo
     echo "  __  __      _            _      _______           _ "
     echo " |  \/  |    (_)          | |    |__   __|         | |"
     echo " | \  / |__ _ _  __ _  ___| | __    | | ___   ___  | |"
     echo " | |\/| / _\` | |/ _\` |/ __| |/ /    | |/ _ \ / _ \ | |"
     echo " | |  | (_| | | (_| | (__|   <     | | (_) | (_) | |"
     echo " |_|  |_|\__,_| |\__,_|\___|_|\_\    |_|\___/ \___/|_|"
-    echo "            _/ |                                      "
-    echo "           |__/                                       "
+    echo "            _/ |"
+    echo "           |__/ "
     echo -e "${NC}"
     echo -e "${BOLD}${WHITE}  >>> Mjack 数字化管理工具箱 ${NC}  [版本: ${PURPLE}${VERSION}${NC}]"
     draw_line
@@ -92,7 +94,8 @@ show_menu() {
             show_menu
             ;;
         88)
-            echo -e "\n${BLUE}🔄 正在重新同步主脚本...${NC}"
+            # 强制删除本地旧脚本并重新下载
+            rm -f "$LOCAL_MAIN"
             bash <(curl -sL https://meqte.github.io/sh/index.html)
             ;;
         0)
@@ -110,4 +113,8 @@ if [ "$EUID" -ne 0 ]; then
     echo -e "${RED}错误：请以 root 权限运行 (sudo -i)${NC}"
     exit 1
 fi
+
+# 第一步：先初始化快捷键
+init_shortcut
+# 第二步：显示菜单
 show_menu
