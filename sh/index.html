@@ -42,14 +42,14 @@ handle_rtsp() {
 
 show_menu() {
     clear
-    echo -e "${BLUE}=================================${NC}"
-    echo -e "${GREEN}       Mjack 一键工具箱          ${NC}"
-    echo -e "${BLUE}=================================${NC}"
-    echo -e "  1. RTSP 推流服务器 (MediaMTX + FFmpeg)"
-    echo -e "  2. 检查系统负载 (示例功能)"
+    echo -e "${BLUE}============================${NC}"
+    echo -e "${GREEN}     Mjack 工具箱          ${NC}"
+    echo -e "${BLUE}============================${NC}"
+    echo -e "  1. RTSP 推流服务器"
+    echo -e "  2. 检查系统负载"
     echo -e "  3. 建设中..."
     echo -e "  q. 退出脚本"
-    echo -e "${BLUE}==================================${NC}"
+    echo -e "${BLUE}============================${NC}"
     read -p "请输入数字选择: " choice
 
     case $choice in
