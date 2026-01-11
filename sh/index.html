@@ -2,14 +2,14 @@
 
 # ========== 1. 基础配置 ==========
 BASE_URL="https://meqte.github.io/sh"
-RTSP_DIR="/root/rtsp"            # 指向 rtsp 专用目录
-RTSP_SHELL="$RTSP_DIR/rtsp.sh"   # 确保这里和子脚本下载位置一致
-LOCAL_MAIN="/root/m.sh"          # 脚本实体更名为 m.sh
+KJ_URL="https://raw.githubusercontent.com/kejilion/sh/main/kejilion.sh"
+RTSP_DIR="/root/rtsp"            
+RTSP_SHELL="$RTSP_DIR/rtsp.sh"   
+LOCAL_MAIN="/root/m.sh"          
 VERSION="2026.01.15"
 
-# ========== 2. 自动化注册 m 快捷键 ==========
+# ========== 2. 自动化注册 m 快捷键 (秒开逻辑) ==========
 init_shortcut() {
-    # 只有当快捷键不存在或者文件不存在时才下载，实现秒开逻辑
     if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/m" ]; then
         [ ! -d "/root" ] && mkdir -p "/root"
         curl -sL "${BASE_URL}/index.html" -o "$LOCAL_MAIN"
@@ -19,7 +19,7 @@ init_shortcut() {
     fi
 }
 
-# ========== 3. 颜色与样式定义 ==========
+# ========== 3. 颜色定义 ==========
 BOX_COLOR='\033[1;36m'   
 INFO_COLOR='\033[38;5;81m' 
 OPT_NUM='\033[1;36m'    
@@ -27,22 +27,24 @@ WARN_COLOR='\033[1;33m'
 EXIT_COLOR='\033[1;31m' 
 NC='\033[0m'            
 
-# ========== 4. 功能逻辑 ==========
+# ========== 4. 远程调用函数 ==========
+# 使用此函数调用外部脚本模块，保持主脚本简洁
+call_remote() {
+    echo -e "\n${INFO_COLOR}正在调用外部组件: $1 ...${NC}"
+    bash <(curl -sL "$KJ_URL") "$1"
+    # 执行完后返回菜单
+    echo -e "\n${INFO_COLOR}组件执行完毕，正在返回主菜单...${NC}"
+    sleep 1
+    show_menu
+}
+
 handle_rtsp() {
     if [ -f "$RTSP_SHELL" ]; then
-        echo -e "\n${INFO_COLOR}检测到本地组件，正在进入...${NC}"
-        chmod +x "$RTSP_SHELL"
-        bash "$RTSP_SHELL" # 使用 bash 运行以支持返回
+        bash "$RTSP_SHELL"
     else
-        echo -e "\n${WARN_COLOR}本地组件不存在，正在分发核心组件...${NC}"
+        echo -e "\n${WARN_COLOR}本地 RTSP 组件未安装，正在启动分发脚本...${NC}"
         bash <(curl -sL "${BASE_URL}/rtsp/index.html")
-        if [ -f "$RTSP_SHELL" ]; then
-            chmod +x "$RTSP_SHELL"
-            bash "$RTSP_SHELL"
-        else
-            echo -e "${EXIT_COLOR}下载失败，请检查网络连接${NC}"
-            sleep 2
-        fi
+        [ -f "$RTSP_SHELL" ] && bash "$RTSP_SHELL"
     fi
     show_menu 
 }
@@ -56,33 +58,23 @@ show_menu() {
     echo -e "${BOX_COLOR}║    ╩  ╚═╝╩╚═ ╩ ╚═╝  ╩╩ ╩╩═╝╩═╝╚═╝╚═╝ ╩ ╚═╝    ║${NC}"
     echo -e "${BOX_COLOR}║     ─────── M j a c k   T o o l s ───────     ║${NC}"
     echo -e "${BOX_COLOR}╚═══════════════════════════════════════════════╝${NC}"
-
-    echo -e " 科技Mjack脚本工具箱 ${INFO_COLOR}v${VERSION}${NC}"
-    echo -e " 命令行输入 ${WARN_COLOR}m${NC} 可快速启动脚本"
+    echo -e " 科技Mjack脚本工具箱 ${INFO_COLOR}v${VERSION}${NC} | 快捷键: ${WARN_COLOR}m${NC}"
     echo -e " ------------------------------------------"
 
-    UPTIME=$(uptime -p | sed 's/up //')
-    echo -e " 系统环境: ${INFO_COLOR}$(cat /etc/os-release 2>/dev/null | grep "PRETTY_NAME" | cut -d '"' -f 2 || echo "Linux")${NC}"
-    echo -e " 运行时间: ${INFO_COLOR}${UPTIME}${NC}"
-    echo -e " ------------------------------------------"
-
-    # 实装项目
-    echo -e " ${OPT_NUM}1.${NC}   RTSP 推流管理系统"
+    echo -e " ${OPT_NUM}1.${NC}   RTSP 推流管理系统 (原创)"
     echo -e " ${OPT_NUM}2.${NC}   系统信息综合查询"
-
-    # 替换后的常用应用名称 (占位)
-    echo -e " ${OPT_NUM}3.${NC}   Docker 环境一键安装"
-    echo -e " ${OPT_NUM}4.${NC}   Nginx 常用配置管理"
-    echo -e " ${OPT_NUM}5.${NC}   1Panel 面板快捷安装"
-    echo -e " ${OPT_NUM}6.${NC}   BBR 网络加速优化"
-    echo -e " ${OPT_NUM}7.${NC}   青龙面板 (脚本定时器)"
-    echo -e " ${OPT_NUM}8.${NC}   Alist 目录列表程序"
-    echo -e " ${OPT_NUM}9.${NC}   宝塔面板组件管理"
-    echo -e " ${OPT_NUM}10.${NC}  V2Ray/Xray 维护工具"
-    echo -e " ${OPT_NUM}11.${NC}  磁盘挂载与容量扩容"
-    echo -e " ${OPT_NUM}12.${NC}  MySQL 数据库常用操作"
-    echo -e " ${OPT_NUM}13.${NC}  Redis 缓存环境部署"
-    echo -e " ${OPT_NUM}14.${NC}  常用运维脚本合集"
+    echo -e " ${OPT_NUM}3.${NC}   系统更新"
+    echo -e " ${OPT_NUM}4.${NC}   系统清理"
+    echo -e " ${OPT_NUM}5.${NC}   基础工具安装"
+    echo -e " ${OPT_NUM}6.${NC}   BBR 网络管理"
+    echo -e " ${OPT_NUM}7.${NC}   Docker 容器管理"
+    echo -e " ${OPT_NUM}8.${NC}   WARP 网络管理"
+    echo -e " ${OPT_NUM}9.${NC}   测试脚本合集"
+    echo -e " ${OPT_NUM}10.${NC}  甲骨文云脚本合集"
+    echo -e " ${OPT_NUM}11.${NC}  LDNMP 建站环境"
+    echo -e " ${OPT_NUM}12.${NC}  应用市场 (各种面板)"
+    echo -e " ${OPT_NUM}13.${NC}  后台工作区管理"
+    echo -e " ${OPT_NUM}14.${NC}  系统工具 / 集群控制"
     
     echo -e " ------------------------------------------"
     echo -e " ${INFO_COLOR}88.${NC}  脚本同步更新"
@@ -95,39 +87,32 @@ show_menu() {
 
     case $choice in
         1)  handle_rtsp ;;
-        2)  
-            echo -e "\n--- CPU & 内存负载 ---"
-            top -bn1 | head -n 5
-            read -p "按回车返回菜单..."
-            show_menu 
-            ;;
-        [3-9]|1[0-4]) # 匹配新增的 3-14 选项
-            echo -e "\n${WARN_COLOR}该功能正在集成中，敬请期待...${NC}"
-            sleep 2
-            show_menu
-            ;;
+        2)  call_remote info ;;
+        3)  call_remote update ;;
+        4)  call_remote clean ;;
+        5)  call_remote tool ;;
+        6)  call_remote bbr ;;
+        7)  call_remote docker ;;
+        8)  call_remote warp ;;
+        9)  call_remote test ;;
+        10) call_remote oracle ;;
+        11) call_remote ldnmp ;;
+        12) call_remote store ;;
+        13) call_remote screen ;;
+        14) call_remote system ;;
         88)
-            echo -e "\n${INFO_COLOR}正在同步最新版本...${NC}"
+            echo -e "\n${INFO_COLOR}正在从服务器同步最新版本...${NC}"
             curl -sL "${BASE_URL}/index.html" -o "$LOCAL_MAIN"
             chmod +x "$LOCAL_MAIN"
             echo -e "${GREEN}同步完成！请重新运行 m${NC}"
             exit 0
             ;;
-        0)
-            echo -e "\n${INFO_COLOR}感谢使用 Mjack Tools，再见！${NC}"
-            exit 0
-            ;;
-        *)
-            show_menu
-            ;;
+        0) exit 0 ;;
+        *) show_menu ;;
     esac
 }
 
 # 执行入口
-if [ "$EUID" -ne 0 ]; then
-    echo -e "${EXIT_COLOR}请以 root 权限运行${NC}"
-    exit 1
-fi
-
+if [ "$EUID" -ne 0 ]; then echo -e "${EXIT_COLOR}请以 root 权限运行${NC}"; exit 1; fi
 init_shortcut
 show_menu
