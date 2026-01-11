@@ -2,15 +2,15 @@
 
 # ========== 1. 基础配置 ==========
 BASE_URL="https://meqte.github.io/sh"
-RTSP_DIR="/root/rtsp"            # 修改：指向 rtsp 专用目录
-RTSP_SHELL="$RTSP_DIR/rtsp.sh"   # 修改：确保这里和子脚本下载位置完全对齐
-LOCAL_MAIN="/root/m.sh"
+RTSP_DIR="/root/rtsp"            # 指向 rtsp 专用目录
+RTSP_SHELL="$RTSP_DIR/rtsp.sh"   # 确保这里和子脚本下载位置一致
+LOCAL_MAIN="/root/m.sh"          # 脚本实体更名为 m.sh
 VERSION="2026.01.15"
 
 # ========== 2. 自动化注册 m 快捷键 ==========
 init_shortcut() {
-    # 只有当快捷键不存在或者文件不存在时才下载，避免重复下载主脚本
-    if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/mm" ]; then
+    # 只有当快捷键不存在或者文件不存在时才下载，实现秒开逻辑
+    if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/m" ]; then
         [ ! -d "/root" ] && mkdir -p "/root"
         curl -sL "${BASE_URL}/index.html" -o "$LOCAL_MAIN"
         chmod +x "$LOCAL_MAIN"
@@ -29,18 +29,13 @@ NC='\033[0m'
 
 # ========== 4. 功能逻辑 ==========
 handle_rtsp() {
-    # 核心：检查 /root/rtsp/rtsp.sh 是否存在
     if [ -f "$RTSP_SHELL" ]; then
         echo -e "\n${INFO_COLOR}检测到本地组件，正在进入...${NC}"
         chmod +x "$RTSP_SHELL"
-        # 修改：去掉 exec，改为直接 bash。这样退出 rtsp 后能回到本菜单
-        bash "$RTSP_SHELL"
+        bash "$RTSP_SHELL" # 使用 bash 运行以支持返回
     else
         echo -e "\n${WARN_COLOR}本地组件不存在，正在分发核心组件...${NC}"
-        # 下载并运行你的子目录安装脚本 (rtsp/index.html)
         bash <(curl -sL "${BASE_URL}/rtsp/index.html")
-        
-        # 下载完成后再次判断
         if [ -f "$RTSP_SHELL" ]; then
             chmod +x "$RTSP_SHELL"
             bash "$RTSP_SHELL"
@@ -49,7 +44,7 @@ handle_rtsp() {
             sleep 2
         fi
     fi
-    show_menu # 返回菜单
+    show_menu 
 }
 
 # ========== 5. 菜单界面 ==========
@@ -63,18 +58,31 @@ show_menu() {
     echo -e "${BOX_COLOR}╚═══════════════════════════════════════════════╝${NC}"
 
     echo -e " 科技Mjack脚本工具箱 ${INFO_COLOR}v${VERSION}${NC}"
-    echo -e " 命令行输入 ${WARN_COLOR}mm${NC} 可快速启动脚本"
+    echo -e " 命令行输入 ${WARN_COLOR}m${NC} 可快速启动脚本"
     echo -e " ------------------------------------------"
 
-    # 系统信息展示
     UPTIME=$(uptime -p | sed 's/up //')
     echo -e " 系统环境: ${INFO_COLOR}$(cat /etc/os-release 2>/dev/null | grep "PRETTY_NAME" | cut -d '"' -f 2 || echo "Linux")${NC}"
     echo -e " 运行时间: ${INFO_COLOR}${UPTIME}${NC}"
     echo -e " ------------------------------------------"
 
+    # 实装项目
     echo -e " ${OPT_NUM}1.${NC}   RTSP 推流管理系统"
     echo -e " ${OPT_NUM}2.${NC}   系统信息综合查询"
-    # ... (此处省略中间建设中的 3-11 项，保持原样即可) ...
+
+    # 替换后的常用应用名称 (占位)
+    echo -e " ${OPT_NUM}3.${NC}   Docker 环境一键安装"
+    echo -e " ${OPT_NUM}4.${NC}   Nginx 常用配置管理"
+    echo -e " ${OPT_NUM}5.${NC}   1Panel 面板快捷安装"
+    echo -e " ${OPT_NUM}6.${NC}   BBR 网络加速优化"
+    echo -e " ${OPT_NUM}7.${NC}   青龙面板 (脚本定时器)"
+    echo -e " ${OPT_NUM}8.${NC}   Alist 目录列表程序"
+    echo -e " ${OPT_NUM}9.${NC}   宝塔面板组件管理"
+    echo -e " ${OPT_NUM}10.${NC}  V2Ray/Xray 维护工具"
+    echo -e " ${OPT_NUM}11.${NC}  磁盘挂载与容量扩容"
+    echo -e " ${OPT_NUM}12.${NC}  MySQL 数据库常用操作"
+    echo -e " ${OPT_NUM}13.${NC}  Redis 缓存环境部署"
+    echo -e " ${OPT_NUM}14.${NC}  常用运维脚本合集"
     
     echo -e " ------------------------------------------"
     echo -e " ${INFO_COLOR}88.${NC}  脚本同步更新"
@@ -92,6 +100,11 @@ show_menu() {
             top -bn1 | head -n 5
             read -p "按回车返回菜单..."
             show_menu 
+            ;;
+        [3-9]|1[0-4]) # 匹配新增的 3-14 选项
+            echo -e "\n${WARN_COLOR}该功能正在集成中，敬请期待...${NC}"
+            sleep 2
+            show_menu
             ;;
         88)
             echo -e "\n${INFO_COLOR}正在同步最新版本...${NC}"
