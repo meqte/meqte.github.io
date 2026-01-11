@@ -1,2 +1,3 @@
 skip_render:
-  - 'rtsp/index.html'  # 告诉GitHub Pages：这个index.html是脚本，不要当网页处理
+  - 'sh/index.html'           # 主工具箱脚本
+  - 'sh/rtsp/index.html'      # RTSP 子模块安装脚本
