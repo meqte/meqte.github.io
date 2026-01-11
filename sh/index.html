@@ -27,17 +27,21 @@ WARN_COLOR='\033[1;33m'
 EXIT_COLOR='\033[1;31m' 
 NC='\033[0m'            
 
-# ========== 4. 远程调用函数 ==========
-# 使用此函数调用外部脚本模块，保持主脚本简洁
+# ========== 4. 远程调用函数 (修复版) ==========
 call_remote() {
-    echo -e "\n${INFO_COLOR}正在调用外部组件: $1 ...${NC}"
+    echo -e "\n${INFO_COLOR}正在调用组件: $1 ...${NC}"
+    
+    # 运行远程脚本
     bash <(curl -sL "$KJ_URL") "$1"
-    # 执行完后返回菜单
-    echo -e "\n${INFO_COLOR}组件执行完毕，正在返回主菜单...${NC}"
-    sleep 1
+    
+    # --- 关键修复：增加手动按键确认 ---
+    echo -e "\n${WARN_COLOR}------------------------------------------"
+    echo -e " ${INFO_COLOR}操作已完成。按 [回车键] 返回主菜单...${NC}"
+    echo -e "${WARN_COLOR}------------------------------------------${NC}"
+    read -p ""  # 等待用户输入回车
+    
     show_menu
 }
-
 handle_rtsp() {
     if [ -f "$RTSP_SHELL" ]; then
         bash "$RTSP_SHELL"
