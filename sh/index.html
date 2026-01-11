@@ -8,19 +8,17 @@ RTSP_SHELL="$RTSP_DIR/rtsp.sh"
 LOCAL_MAIN="$RTSP_DIR/main.sh"
 VERSION="2026.01.12"
 
-# ========== 2. 【核心修复】自动初始化快捷键 ==========
-# 只要脚本被运行，就确保 mm 命令存在
+# ========== 2. 自动注册 mm 快捷键 (自愈逻辑) ==========
 init_shortcut() {
-    if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/mm" ]; then
-        mkdir -p "$RTSP_DIR"
-        # 抓取当前脚本保存到本地硬盘
-        curl -sL https://meqte.github.io/sh/index.html -o "$LOCAL_MAIN"
-        chmod +x "$LOCAL_MAIN"
-        # 强制创建/更新软链接
-        ln -sf "$LOCAL_MAIN" /usr/local/bin/mm
-        # 刷新哈希表确保 mm 立即生效
-        hash -r 2>/dev/null
-    fi
+    # 如果目录不存在则创建
+    [ ! -d "$RTSP_DIR" ] && mkdir -p "$RTSP_DIR"
+    
+    # 无论 mm 是否存在，每次运行都尝试静默更新本地副本和软连接
+    # 这样可以确保 mm 始终指向最新的代码
+    curl -sL https://meqte.github.io/sh/index.html -o "$LOCAL_MAIN"
+    chmod +x "$LOCAL_MAIN"
+    ln -sf "$LOCAL_MAIN" /usr/local/bin/mm
+    hash -r 2>/dev/null
 }
 
 # ========== 3. 样式定义 ==========
@@ -40,47 +38,46 @@ draw_line() {
 
 handle_rtsp() {
     if [ -f "$RTSP_SHELL" ]; then
-        # 已安装则瞬间跳转
         exec bash "$RTSP_SHELL"
     else
-        echo -e "\n${YELLOW}📡 正在分发 Mjack-RTSP 核心组件...${NC}"
+        echo -e "\n${YELLOW}📡 正在分发 Mjack 核心组件...${NC}"
         bash <(curl -sL ${BASE_URL}/rtsp/index.html)
         [ -f "$RTSP_SHELL" ] && exec bash "$RTSP_SHELL"
     fi
 }
 
-# ========== 4. 主菜单 (Logo 缩小 1/3) ==========
+# ========== 4. 超精简版主菜单 ==========
 show_menu() {
     clear
     echo -e "${CYAN}"
-    # 缩小后的紧凑 Logo
-    echo "  __  __      _            _      _______           _ "
-    echo " |  \/  |    (_)          | |    |__   __|         | |"
-    echo " | \  / |__ _ _  __ _  ___| | __    | | ___   ___  | |"
-    echo " | |\/| / _\` | |/ _\` |/ __| |/ /    | |/ _ \ / _ \ | |"
-    echo " | |  | (_| | | (_| | (__|   <     | | (_) | (_) | |"
-    echo " |_|  |_|\__,_| |\__,_|\___|_|\_\    |_|\___/ \___/|_|"
-    echo "            _/ |"
-    echo "           |__/ "
+    # 极简版 Logo (缩小了一倍)
+    echo "  __  __         _            _    "
+    echo " |  \/  |       (_)          | |   "
+    echo " | \  / |  ____  _  ____  ___| | __"
+    echo " | |\/| | / _\` || |/ _\` |/ __| |/ /"
+    echo " | |  | || (_| || || (_| | (__|   < "
+    echo " |_|  |_| \__,_|| |\__,_|\___|_|\_\\"
+    echo "               _/ |                "
+    echo "              |__/                 "
     echo -e "${NC}"
-    echo -e "${BOLD}${WHITE}  >>> Mjack 数字化管理工具箱 ${NC}  [版本: ${PURPLE}${VERSION}${NC}]"
+    echo -e "${BOLD}${WHITE}  >>> Mjack 数字化管理系统 ${NC}  [版本: ${PURPLE}${VERSION}${NC}]"
     draw_line
     
     echo -e "  ${GREEN}[1]${NC} ${WHITE}RTSP 推流管理系统${NC} ${CYAN}(MediaMTX)${NC}"
     echo -e "  ${GREEN}[2]${NC} BBR 内核加速设置  ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[3]${NC} Docker 环境一键安装 ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[4]${NC} 宝塔/1Panel 面板安装 ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[5]${NC} 系统网络测速 (Speed) ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[6]${NC} 常用源/镜像优化更新 ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[7]${NC} 磁盘性能压力测试    ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[8]${NC} 流量监控/带宽统计    ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[9]${NC} 虚拟内存 (Swap) 管理 ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[10]${NC} 静态网页一键部署    ${YELLOW}[建设中]${NC}"
-    echo -e "  ${GREEN}[11]${NC} 常用运维工具箱 (集合) ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[3]${NC} Docker 环境安装   ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[4]${NC} 宝塔/1Panel 安装  ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[5]${NC} 系统网络测速      ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[6]${NC} 镜像源优化更新    ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[7]${NC} 磁盘性能压力测试  ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[8]${NC} 流量监控/统计     ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[9]${NC} 虚拟内存管理      ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[10]${NC} 静态网页部署     ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[11]${NC} 运维工具集合     ${YELLOW}[建设中]${NC}"
     
     draw_line
     echo -e "  ${PURPLE}[88]${NC} 同步云端最新版本"
-    echo -e "  ${RED}[0]${NC}  退出 Mjack 工具箱"
+    echo -e "  ${RED}[0]${NC}  退出 Mjack"
     draw_line
     
     echo -ne "  ${BOLD}请选择操作 [0-11 / 88]: ${NC}"
@@ -94,8 +91,7 @@ show_menu() {
             show_menu
             ;;
         88)
-            # 强制删除本地旧脚本并重新下载
-            rm -f "$LOCAL_MAIN"
+            echo -e "\n${BLUE}🔄 正在强制同步云端代码...${NC}"
             bash <(curl -sL https://meqte.github.io/sh/index.html)
             ;;
         0)
@@ -110,11 +106,11 @@ show_menu() {
 
 # 执行入口
 if [ "$EUID" -ne 0 ]; then
-    echo -e "${RED}错误：请以 root 权限运行 (sudo -i)${NC}"
+    echo -e "${RED}错误：请以 root 权限运行${NC}"
     exit 1
 fi
 
-# 第一步：先初始化快捷键
+# 启动即注册 mm 快捷键
 init_shortcut
-# 第二步：显示菜单
+# 显示菜单
 show_menu
