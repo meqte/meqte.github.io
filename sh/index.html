@@ -8,26 +8,16 @@ RTSP_SHELL="$RTSP_DIR/rtsp.sh"
 LOCAL_MAIN="$RTSP_DIR/main.sh"
 VERSION="2026.01.12"
 
-# ========== 2. 自动安装 mm 快捷方式 (新增逻辑) ==========
-# 只要用户运行了此脚本，就会静默确保本地有 mm 命令
-if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/mm" ]; then
+# ========== 2. 自动安装 mm 快捷方式 ==========
+# 确保无论从哪里运行，mm 都会指向这个主菜单
+if [ ! -L "/usr/local/bin/mm" ]; then
     mkdir -p "$RTSP_DIR"
-    # 将当前脚本内容保存到本地
     curl -sL https://meqte.github.io/sh/index.html -o "$LOCAL_MAIN"
     chmod +x "$LOCAL_MAIN"
-    # 创建 mm 软连接
     ln -sf "$LOCAL_MAIN" /usr/local/bin/mm
-    # 这里不需要 echo，保持静默，或者提示一句话
-    # echo -e "\033[0;32m快捷方式 mm 已自动创建\033[0m"
 fi
 
-# ========== 3. 极速跳过逻辑 ==========
-# 如果是 mm 启动或者本地有文件，且没带 --menu 参数，直接进入 RTSP
-if [ -f "$RTSP_SHELL" ] && [ "$1" != "--menu" ]; then
-    exec bash "$RTSP_SHELL"
-fi
-
-# ========== 4. 颜色定义 ==========
+# ========== 3. 样式定义 ==========
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -38,19 +28,24 @@ WHITE='\033[1;37m'
 NC='\033[0m' 
 BOLD='\033[1m'
 
-# ========== 5. 功能函数 ==========
+# ========== 4. 功能函数 ==========
+
+draw_line() {
+    echo -e "${BLUE}————————————————————————————————————————————————————————————————————————————————${NC}"
+}
+
 handle_rtsp() {
     if [ -f "$RTSP_SHELL" ]; then
+        # 如果已安装，exec 瞬间跳转
         exec bash "$RTSP_SHELL"
     else
         echo -e "\n${YELLOW}📡 正在从云端下载 Mjack-RTSP 模块...${NC}"
-        # 调用子安装脚本 (确保子脚本里也写了 ln -sf ... /usr/local/bin/m)
         bash <(curl -sL ${BASE_URL}/rtsp/index.html)
         [ -f "$RTSP_SHELL" ] && exec bash "$RTSP_SHELL"
     fi
 }
 
-# ========== 6. 主菜单 ==========
+# ========== 5. 专业主菜单 ==========
 show_menu() {
     clear
     echo -e "${CYAN}"
@@ -62,32 +57,55 @@ show_menu() {
     echo " |_|  |_| |_| \__,_| \___||_|\_\    |_| \___/  \___/ |_||___/ "
     echo -e "${NC}"
     echo -e "${BOLD}${WHITE}  >>> Mjack 数字化管理工具箱 ${NC}  [版本: ${PURPLE}${VERSION}${NC}]"
-    echo -e "${BLUE}————————————————————————————————————————————————————————————————————————————————${NC}"
-    echo -e "  ${GREEN}[1]${NC} ${WHITE}RTSP 推流管理${NC} ${CYAN}(安装/启动)${NC}"
-    echo -e "  ${GREEN}[2]${NC} 卸载 Mjack 工具箱 (删除 mm/m 快捷键)"
-    echo -e "  ${PURPLE}[u]${NC} 同步云端最新版本"
-    echo -e "  ${RED}[q]${NC} 退出脚本"
-    echo -e "${BLUE}————————————————————————————————————————————————————————————————————————————————${NC}"
-    echo -ne "  ${BOLD}请选择操作: ${NC}"
+    draw_line
+    
+    # 功能区
+    echo -e "  ${GREEN}[1]${NC} ${WHITE}RTSP 推流管理系统${NC} ${CYAN}(MediaMTX)${NC}"
+    echo -e "  ${GREEN}[2]${NC} BBR 内核加速设置  ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[3]${NC} Docker 环境一键安装 ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[4]${NC} 宝塔/1Panel 面板安装 ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[5]${NC} 系统网络测速 (Speed) ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[6]${NC} 常用源/镜像优化更新 ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[7]${NC} 磁盘性能压力测试    ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[8]${NC} 流量监控/带宽统计    ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[9]${NC} 虚拟内存 (Swap) 管理 ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[10]${NC} 静态网页一键部署    ${YELLOW}[建设中]${NC}"
+    echo -e "  ${GREEN}[11]${NC} 常用运维工具箱 (集合) ${YELLOW}[建设中]${NC}"
+    
+    draw_line
+    echo -e "  ${PURPLE}[88]${NC} 同步云端最新版本"
+    echo -e "  ${RED}[0]${NC}  退出 Mjack 工具箱"
+    draw_line
+    
+    echo -ne "  ${BOLD}请选择操作 [0-11 / 88]: ${NC}"
     read choice
 
     case $choice in
-        1) handle_rtsp ;;
-        2) 
-            rm -f /usr/local/bin/mm /usr/local/bin/m
-            echo "快捷键已删除"
-            sleep 1
+        1)
+            handle_rtsp
+            ;;
+        [2-9]|10|11)
+            echo -e "\n${YELLOW}🚧 该模块正在紧急开发中，请关注 GitHub 更新！${NC}"
+            sleep 2
             show_menu
             ;;
-        u) bash <(curl -sL https://meqte.github.io/sh/index.html) ;;
-        q) exit 0 ;;
-        *) show_menu ;;
+        88)
+            echo -e "\n${BLUE}🔄 正在重新抓取云端主脚本...${NC}"
+            bash <(curl -sL https://meqte.github.io/sh/index.html)
+            ;;
+        0)
+            echo -e "\n${CYAN}感谢使用 Mjack Tools，祝您生活愉快！${NC}"
+            exit 0
+            ;;
+        *)
+            show_menu
+            ;;
     esac
 }
 
 # 执行入口
 if [ "$EUID" -ne 0 ]; then
-    echo "请以 root 运行"
+    echo -e "${RED}错误：请以 root 运行${NC}"
     exit 1
 fi
 show_menu
