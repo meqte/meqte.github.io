@@ -13,12 +13,12 @@ VERSION="2026.01.01"
 
 # ========== 2. 自动化注册 m 快捷键 (秒开逻辑) ==========
 init_shortcut() {
-    # 检查 m.sh 是否存在或快捷键 x 是否已创建
+    # 检查 m.sh 是否存在或快捷键 m 是否已创建
     if [ ! -f "$LOCAL_MAIN" ] || [ ! -L "/usr/local/bin/m" ]; then
         [ ! -d "/root" ] && mkdir -p "/root"
         curl -sL "${BASE_URL}/index.html" -o "$LOCAL_MAIN"
         chmod +x "$LOCAL_MAIN"
-        ln -sf "$LOCAL_MAIN" /usr/local/bin/x
+        ln -sf "$LOCAL_MAIN" /usr/local/bin/m
         hash -r 2>/dev/null
     fi
 }
@@ -77,7 +77,7 @@ show_menu() {
     echo -e "${BOX_COLOR}║    ╩  ╚═╝╩╚═ ╩ ╚═╝  ╩╩ ╩╩═╝╩═╝╚═╝╚═╝ ╩ ╚═╝    ║${NC}"
     echo -e "${BOX_COLOR}║     ─────── M j a c k   T o o l s ───────     ║${NC}"
     echo -e "${BOX_COLOR}╚═══════════════════════════════════════════════╝${NC}"
-    echo -e " 科技Mjack脚本工具箱 ${INFO_COLOR}v${VERSION}${NC} | 快捷键: ${WARN_COLOR}x${NC}"
+    echo -e " Mjack-Tools ${INFO_COLOR}v${VERSION}${NC} | 快捷键: ${WARN_COLOR}m${NC}"
     echo -e " ------------------------------------------"
 
     echo -e " ${OPT_NUM}1.${NC}   RTSP 推流管理系统 (原创)"
@@ -126,7 +126,7 @@ show_menu() {
             echo -e "${GREEN}同步完成！请重新运行 m${NC}"
             exit 0
             ;;
-        0)  echo -e "\n再见！"; exit 0 ;;
+        0)  echo -e "\nBoy Boy！"; exit 0 ;;
         *)  show_menu ;;
     esac
 }
