@@ -1,7 +1,7 @@
 #!/bin/bash
 ############################################
 #  Mjack Tools 一键安装脚本
-#  bash <(curl -sL meqte.github.io/sh)
+#  bash <(curl -sL meqte.github.io/sh/install-mjack.sh)
 ############################################
 
 # 配置变量
@@ -17,7 +17,6 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# 显示欢迎信息
 echo -e "${BLUE}╔══════════════════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║           Mjack Tools 一键安装脚本                    ║${NC}"
 echo -e "${BLUE}║           版本: ${VERSION}                            ║${NC}"
@@ -26,7 +25,7 @@ echo -e "${BLUE}╚════════════════════�
 # 检查是否为 root 用户
 if [ "$EUID" -ne 0 ]; then 
     echo -e "${RED}请以 root 权限运行此脚本${NC}"
-    echo -e "${YELLOW}建议使用: sudo bash <(curl -sL meqte.github.io/sh)${NC}"
+    echo -e "${YELLOW}建议使用: sudo bash <(curl -sL meqte.github.io/sh/install-mjack.sh)${NC}"
     exit 1
 fi
 
