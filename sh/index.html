@@ -19,8 +19,8 @@ NC='\033[0m'
 
 # 显示欢迎信息
 echo -e "${BLUE}╔══════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║           Mjack Tools 一键安装脚本                    ║${NC}"
-echo -e "${BLUE}║           版本: ${VERSION}                            ║${NC}"
+echo -e "${BLUE}║           Mjack Tools 一键安装脚本                   ║${NC}"
+echo -e "${BLUE}║           版本: ${VERSION}                           ║${NC}"
 echo -e "${BLUE}╚══════════════════════════════════════════════════════╝${NC}"
 
 # 检查是否为 root 用户
@@ -69,15 +69,10 @@ if [ -f "$INSTALL_PATH" ] && [ -L "$SHORTCUT_PATH" ]; then
     echo -e "${BLUE}  快捷命令: m                            ${NC}"
     echo -e "${BLUE}  版本号: $VERSION                       ${NC}"
     echo -e "${BLUE}==========================================${NC}"
-    echo -e "${YELLOW}现在你可以直接输入 'm' 来启动 Mjack Tools${NC}"
-    echo -e "${YELLOW}或者运行: bash $INSTALL_PATH${NC}"
+    echo -e "${YELLOW}正在自动启动 Mjack Tools...${NC}"
     
-    # 询问是否立即启动
-    echo -e "\n${GREEN}是否立即启动 Mjack Tools？(y/N): ${NC}"
-    read -r start_now
-    if [[ "$start_now" =~ ^[Yy]$ ]]; then
-        exec "$SHORTCUT_PATH"
-    fi
+    # 自动启动系统
+    exec "$SHORTCUT_PATH"
 else
     echo -e "${RED}✗ 安装验证失败${NC}"
     exit 1
