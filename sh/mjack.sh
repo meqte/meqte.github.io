@@ -16028,40 +16028,43 @@ Mjack_Affiliates() {
 
 games_server_tools() {
 
-	while true; do
-	  clear
-	  	  echo -e "${gl_kjlan}------------------------"
-	  echo -e "${gl_kjlan}1. ${gl_bai}幻兽帕鲁开服脚本"
-	  echo -e "${gl_kjlan}2. ${gl_bai}我的世界开服脚本"
-	  echo -e "${gl_kjlan}------------------------"
-	  echo -e "${gl_kjlan}0. ${gl_bai}返回主菜单"
-	  echo -e "${gl_kjlan}------------------------${gl_bai}"
-	  read -e -p "请输入你的选择: " sub_choice
+    while true; do
+        clear
+        echo -e "${gl_kjlan}-------------------------------"
+        echo -e "          ${gl_bai}Mjack 脚本开发中"
+        echo -e "${gl_kjlan}-------------------------------"
+        echo -e "${gl_kjlan}1. ${gl_bai}脚本开发中。。。。。"
+        echo -e "${gl_kjlan}2. ${gl_bai}脚本开发中。。。。。"
+        echo -e "${gl_kjlan}-------------------------------"
+        echo -e "${gl_kjlan}0. ${gl_bai}返回上一级菜单"
+        echo -e "${gl_kjlan}-------------------------------${gl_bai}"
+        
+        read -e -p "请输入你的选择 [0-4]: " sub_choice
 
-	  case $sub_choice in
-
-		  1) send_stats "幻兽帕鲁开服脚本" ; cd ~
-			 curl -sS -O ${gh_proxy}raw.githubusercontent.com/kejilion.sh/main/palworld.sh ; chmod +x palworld.sh ; ./palworld.sh
-			 exit
-			 ;;
-		  2) send_stats "我的世界开服脚本" ; cd ~
-			 curl -sS -O ${gh_proxy}raw.githubusercontent.com/kejilion.sh/main/mc.sh ; chmod +x mc.sh ; ./mc.sh
-			 exit
-			 ;;
-
-		  0)
-			Mjack
-			;;
-
-		  *)
-			echo "无效的输入!"
-			;;
-	  esac
-	  break_end
-
-	done
-
-
+        case $sub_choice in
+            1)
+                send_stats "自编译Nginx"
+                echo -e "${gl_lv}正在安装RTSP推流脚本...${gl_bai}"
+                # 在此处插入你的 Nginx 编译命令
+                bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/main/sh/rtsp/index.html)
+                break_end
+                ;;
+            2)
+                send_stats "自编译PHP"
+                echo -e "${gl_lv}正在开始安装 VV脚本流程...${gl_bai}"
+                bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/refs/heads/main/sh/sb/sb.sh)
+                break_end
+                ;;
+            0)
+                # 跳出当前循环，返回主菜单
+                break 
+                ;;
+            *)
+                echo -e "${gl_hong}无效输入，请重新选择！${gl_bai}"
+                sleep 1
+                ;;
+        esac
+    done
 }
 
 
