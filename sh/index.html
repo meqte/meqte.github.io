@@ -18,11 +18,11 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # 显示欢迎信息
-echo -e "${BLUE}==========================================${NC}"
-echo -e "${BLUE}  Mjack Tools 安装脚本                 ${NC}"
-echo -e "${BLUE}  安装位置: $INSTALL_PATH                ${NC}"
-echo -e "${BLUE}  快捷命令: m                            ${NC}"
-echo -e "${BLUE}==========================================${NC}"
+echo -e "${BLUE}=================================${NC}"
+echo -e "${BLUE}  Mjack Tools 安装脚本            ${NC}"
+echo -e "${BLUE}  安装位置: $INSTALL_PATH         ${NC}"
+echo -e "${BLUE}  快捷命令: m                     ${NC}"
+echo -e "${BLUE}=================================${NC}"
 
 # 检查是否为 root 用户
 if [ "$EUID" -ne 0 ]; then 
@@ -68,7 +68,6 @@ if [ -f "$INSTALL_PATH" ] && [ -L "$SHORTCUT_PATH" ]; then
 #     echo -e "${BLUE}  Mjack Tools 已成功安装                 ${NC}"
 #     echo -e "${BLUE}  安装位置: $INSTALL_PATH                ${NC}"
 #     echo -e "${BLUE}  快捷命令: m                            ${NC}"
-#     echo -e "${BLUE}  版本号: $VERSION                       ${NC}"
 #     echo -e "${BLUE}==========================================${NC}"
     echo -e "${YELLOW}正在自动启动 Mjack Tools...${NC}"
     
