@@ -1,6 +1,6 @@
 #!/bin/bash
 
-author=mjack
+author=meqte
 # github=https://github.com/meqte/meqte.github.io/tree/main/sh/sb
 
 # bash fonts colors

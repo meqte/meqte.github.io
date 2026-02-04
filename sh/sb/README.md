@@ -9,6 +9,8 @@
 
 bash <(wget -qO- -o- https://github.com/233boy/sing-box/raw/main/install.sh)
 
+bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/refs/heads/main/sh/sb/install.sh)
+
 
 # 特点
 
