@@ -15987,7 +15987,7 @@ Mjack_Affiliates() {
     while true; do
         clear
         echo -e "${gl_kjlan}-------------------------------"
-        echo -e "          ${gl_bai}Mjack 自编译脚本"
+        echo -e "    ${gl_bai}Mjack 自编译脚本"
         echo -e "${gl_kjlan}-------------------------------"
         echo -e "${gl_kjlan}1. ${gl_bai}一键安装RTSP推流"
         echo -e "${gl_kjlan}2. ${gl_bai}一键安装 VV脚本"
