@@ -1,5 +1,5 @@
 #!/bin/bash
-sh_v="2026.01.03"
+sh_v="2026.01.04"
 
 
 # 自动安装检测
@@ -15986,31 +15986,31 @@ done
 Mjack_Affiliates() {
     while true; do
         clear
-        echo -e "${gl_kjlan}------------------------------------------"
-        echo -e "          ${gl_bai}Mjack 自编译脚本工具箱"
-        echo -e "${gl_kjlan}------------------------------------------"
-        echo -e "${gl_kjlan}1. ${gl_bai}一键自编译安装 Nginx"
-        echo -e "${gl_kjlan}2. ${gl_bai}一键自编译安装 PHP"
+        echo -e "${gl_kjlan}-------------------------------"
+        echo -e "          ${gl_bai}Mjack 自编译脚本"
+        echo -e "${gl_kjlan}-------------------------------"
+        echo -e "${gl_kjlan}1. ${gl_bai}一键安装RTSP推流"
+        echo -e "${gl_kjlan}2. ${gl_bai}一键安装 VV脚本"
         echo -e "${gl_kjlan}3. ${gl_bai}一键自编译安装 MySQL"
         echo -e "${gl_kjlan}4. ${gl_bai}安装常用编译依赖环境"
-        echo -e "${gl_kjlan}------------------------------------------"
+        echo -e "${gl_kjlan}-------------------------------"
         echo -e "${gl_kjlan}0. ${gl_bai}返回上一级菜单"
-        echo -e "${gl_kjlan}------------------------------------------${gl_bai}"
+        echo -e "${gl_kjlan}-------------------------------${gl_bai}"
         
         read -e -p "请输入你的选择 [0-4]: " sub_choice
 
         case $sub_choice in
             1)
                 send_stats "自编译Nginx"
-                echo -e "${gl_lv}正在准备编译环境并下载 Nginx 源码...${gl_bai}"
+                echo -e "${gl_lv}正在安装RTSP推流脚本...${gl_bai}"
                 # 在此处插入你的 Nginx 编译命令
-                # 例如：bash <(curl -sL https://your-link.sh/nginx.sh)
+                bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/refs/heads/main/sh/rtsp/rtsp.sh)
                 break_end
                 ;;
             2)
                 send_stats "自编译PHP"
-                echo -e "${gl_lv}正在开始 PHP 编译流程...${gl_bai}"
-                # 在此处插入你的 PHP 编译命令
+                echo -e "${gl_lv}正在开始安装 VV脚本流程...${gl_bai}"
+                bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/refs/heads/main/sh/sb/sb.sh)
                 break_end
                 ;;
             3)
