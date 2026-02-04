@@ -15991,8 +15991,6 @@ Mjack_Affiliates() {
         echo -e "${gl_kjlan}-------------------------------"
         echo -e "${gl_kjlan}1. ${gl_bai}一键安装RTSP推流"
         echo -e "${gl_kjlan}2. ${gl_bai}一键安装 VV脚本"
-        echo -e "${gl_kjlan}3. ${gl_bai}一键自编译安装 MySQL"
-        echo -e "${gl_kjlan}4. ${gl_bai}安装常用编译依赖环境"
         echo -e "${gl_kjlan}-------------------------------"
         echo -e "${gl_kjlan}0. ${gl_bai}返回上一级菜单"
         echo -e "${gl_kjlan}-------------------------------${gl_bai}"
@@ -16011,22 +16009,6 @@ Mjack_Affiliates() {
                 send_stats "自编译PHP"
                 echo -e "${gl_lv}正在开始安装 VV脚本流程...${gl_bai}"
                 bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/refs/heads/main/sh/sb/sb.sh)
-                break_end
-                ;;
-            3)
-                send_stats "自编译MySQL"
-                echo -e "${gl_lv}正在开始 MySQL 编译流程（耗时较长）...${gl_bai}"
-                # 在此处插入你的 MySQL 编译命令
-                break_end
-                ;;
-            4)
-                send_stats "安装编译依赖"
-                echo -e "${gl_lv}正在安装 build-essential, gcc, g++, make 等基础工具...${gl_bai}"
-                if [ -f /usr/bin/apt ]; then
-                    apt update && apt install -y build-essential gcc g++ make
-                elif [ -f /usr/bin/yum ]; then
-                    yum groupinstall -y "Development Tools"
-                fi
                 break_end
                 ;;
             0)
