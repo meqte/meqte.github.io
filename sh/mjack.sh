@@ -15984,50 +15984,61 @@ done
 
 
 Mjack_Affiliates() {
+    while true; do
+        clear
+        echo -e "${gl_kjlan}------------------------------------------"
+        echo -e "          ${gl_bai}Mjack 自编译脚本工具箱"
+        echo -e "${gl_kjlan}------------------------------------------"
+        echo -e "${gl_kjlan}1. ${gl_bai}一键自编译安装 Nginx"
+        echo -e "${gl_kjlan}2. ${gl_bai}一键自编译安装 PHP"
+        echo -e "${gl_kjlan}3. ${gl_bai}一键自编译安装 MySQL"
+        echo -e "${gl_kjlan}4. ${gl_bai}安装常用编译依赖环境"
+        echo -e "${gl_kjlan}------------------------------------------"
+        echo -e "${gl_kjlan}0. ${gl_bai}返回上一级菜单"
+        echo -e "${gl_kjlan}------------------------------------------${gl_bai}"
+        
+        read -e -p "请输入你的选择 [0-4]: " sub_choice
 
-clear
-echo "------------------------"
-echo "将为用户提供更简单优雅的推广与购买体验！"
-echo ""
-echo -e "服务器优惠"
-echo "------------------------"
-echo -e "${gl_lan}莱卡云 香港CN2 GIA 韩国双ISP 美国CN2 GIA 优惠活动${gl_bai}"
-echo -e "${gl_bai}网址: https://www.lcayun.com/aff/ZEXUQBIM${gl_bai}"
-echo "------------------------"
-echo -e "${gl_lan}RackNerd 10.99刀每年 美国 1核心 1G内存 20G硬盘 1T流量每月${gl_bai}"
-echo -e "${gl_bai}网址: https://my.racknerd.com/aff.php?aff=5501&pid=879${gl_bai}"
-echo "------------------------"
-echo -e "${gl_zi}Hostinger 52.7刀每年 美国 1核心 4G内存 50G硬盘 4T流量每月${gl_bai}"
-echo -e "${gl_bai}网址: https://cart.hostinger.com/pay/d83c51e9-0c28-47a6-8414-b8ab010ef94f?_ga=GA1.3.942352702.1711283207${gl_bai}"
-echo "------------------------"
-echo -e "${gl_huang}搬瓦工 49刀每季 美国CN2GIA 日本软银 2核心 1G内存 20G硬盘 1T流量每月${gl_bai}"
-echo -e "${gl_bai}网址: https://bandwagonhost.com/aff.php?aff=69004&pid=87${gl_bai}"
-echo "------------------------"
-echo -e "${gl_lan}DMIT 28刀每季 美国CN2GIA 1核心 2G内存 20G硬盘 800G流量每月${gl_bai}"
-echo -e "${gl_bai}网址: https://www.dmit.io/aff.php?aff=4966&pid=100${gl_bai}"
-echo "------------------------"
-echo -e "${gl_zi}V.PS 6.9刀每月 东京软银 2核心 1G内存 20G硬盘 1T流量每月${gl_bai}"
-echo -e "${gl_bai}网址: https://vps.hosting/cart/tokyo-cloud-kvm-vps/?id=148&?affid=1355&?affid=1355${gl_bai}"
-echo "------------------------"
-echo -e "${gl_kjlan}VPS更多热门优惠${gl_bai}"
-echo -e "${gl_bai}网址: https://Mjack.pro/topvps/${gl_bai}"
-echo "------------------------"
-echo ""
-echo -e "域名优惠"
-echo "------------------------"
-echo -e "${gl_lan}GNAME 8.8刀首年COM域名 6.68刀首年CC域名${gl_bai}"
-echo -e "${gl_bai}网址: https://www.gname.com/register?tt=86836&ttcode=Mjack86836&ttbj=sh${gl_bai}"
-echo "------------------------"
-echo ""
-echo -e "Mjack周边"
-echo "------------------------"
-echo -e "${gl_kjlan}B站: ${gl_bai}https://b23.tv/2mqnQyh              ${gl_kjlan}油管: ${gl_bai}https://www.youtube.com/@Mjack${gl_bai}"
-echo -e "${gl_kjlan}官网: ${gl_bai}https://Mjack.pro/              ${gl_kjlan}导航: ${gl_bai}https://dh.Mjack.pro/${gl_bai}"
-echo -e "${gl_kjlan}博客: ${gl_bai}https://blog.Mjack.pro/         ${gl_kjlan}软件中心: ${gl_bai}https://app.Mjack.pro/${gl_bai}"
-echo "------------------------"
-echo -e "${gl_kjlan}脚本官网: ${gl_bai}https://mjack.sh            ${gl_kjlan}GitHub地址: ${gl_bai}${gh_https_url}github.com/mjack.sh${gl_bai}"
-echo "------------------------"
-echo ""
+        case $sub_choice in
+            1)
+                send_stats "自编译Nginx"
+                echo -e "${gl_lv}正在准备编译环境并下载 Nginx 源码...${gl_bai}"
+                # 在此处插入你的 Nginx 编译命令
+                # 例如：bash <(curl -sL https://your-link.sh/nginx.sh)
+                break_end
+                ;;
+            2)
+                send_stats "自编译PHP"
+                echo -e "${gl_lv}正在开始 PHP 编译流程...${gl_bai}"
+                # 在此处插入你的 PHP 编译命令
+                break_end
+                ;;
+            3)
+                send_stats "自编译MySQL"
+                echo -e "${gl_lv}正在开始 MySQL 编译流程（耗时较长）...${gl_bai}"
+                # 在此处插入你的 MySQL 编译命令
+                break_end
+                ;;
+            4)
+                send_stats "安装编译依赖"
+                echo -e "${gl_lv}正在安装 build-essential, gcc, g++, make 等基础工具...${gl_bai}"
+                if [ -f /usr/bin/apt ]; then
+                    apt update && apt install -y build-essential gcc g++ make
+                elif [ -f /usr/bin/yum ]; then
+                    yum groupinstall -y "Development Tools"
+                fi
+                break_end
+                ;;
+            0)
+                # 跳出当前循环，返回主菜单
+                break 
+                ;;
+            *)
+                echo -e "${gl_hong}无效输入，请重新选择！${gl_bai}"
+                sleep 1
+                ;;
+        esac
+    done
 }
 
 
@@ -16210,6 +16221,7 @@ echo -e "${gl_kjlan}13.  ${gl_bai}系统工具"
 echo -e "${gl_kjlan}14.  ${gl_bai}服务器集群"
 echo -e "${gl_kjlan}----------------------${gl_bai}"
 echo -e "${gl_kjlan}15.  ${gl_bai}自编译脚本"
+echo -e "${gl_kjlan}16.  ${gl_bai}脚本开发中..."
 echo -e "${gl_kjlan}----------------------${gl_bai}"
 echo -e "${gl_kjlan}00.  ${gl_bai}脚本更新"
 echo -e "${gl_kjlan}----------------------${gl_bai}"
