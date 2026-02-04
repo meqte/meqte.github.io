@@ -16099,11 +16099,11 @@ while true; do
 	clear
 	echo "更新日志"
 	echo "------------------------"
-	echo "脚本地址: ${gh_proxy}raw.githubusercontent.com/meqte/meqte.github.io/main/sh/mjack.sh"
+	echo "脚本地址: ${gh_proxy}raw.githubusercontent.com/meqte/sh/main/mjack.sh"
 	echo "------------------------"
 
 	# curl -s ${gh_proxy}raw.githubusercontent.com/meqte/sh/main/mjack_sh_log.txt | tail -n 30
-	local sh_v_new=$(curl -s ${gh_proxy}raw.githubusercontent.com/meqte/meqte.github.io/main/sh/mjack.sh | grep -o 'sh_v="[0-9.]*"' | cut -d '"' -f 2)
+	local sh_v_new=$(curl -s ${gh_proxy}raw.githubusercontent.com/meqte/sh/main/mjack.sh | grep -o 'sh_v="[0-9.]*"' | cut -d '"' -f 2)
 
 	if [ "$sh_v" = "$sh_v_new" ]; then
 		echo -e "${gl_lv}你已经是最新版本！${gl_huang}v$sh_v${gl_bai}"
@@ -16133,9 +16133,9 @@ while true; do
 			clear
 			local country=$(curl -s ipinfo.io/country)
 			if [ "$country" = "CN" ]; then
-				curl -sS -O ${gh_proxy}raw.githubusercontent.com/meqte/meqte.github.io/main/sh/mjack.sh && chmod +x mjack.sh
+				curl -sS -O ${gh_proxy}raw.githubusercontent.com/meqte/sh/main/mjack.sh && chmod +x mjack.sh
 			else
-				curl -sS -O ${gh_proxy}raw.githubusercontent.com/meqte/meqte.github.io/main/sh/mjack.sh && chmod +x mjack.sh
+				curl -sS -O ${gh_proxy}raw.githubusercontent.com/meqte/sh/main/mjack.sh && chmod +x mjack.sh
 			fi
 			canshu_v6
 			CheckFirstRun_true
@@ -16152,11 +16152,11 @@ while true; do
 			local country=$(curl -s ipinfo.io/country)
 			local ipv6_address=$(curl -s --max-time 1 ipv6.ip.sb)
 			if [ "$country" = "CN" ]; then
-				SH_Update_task="curl -sS -O https://gh.kejilion.pro/raw.githubusercontent.com/meqte/meqte.github.io/main/sh/mjack.sh && chmod +x mjack.sh && sed -i 's/canshu=\"default\"/canshu=\"CN\"/g' ./mjack.sh"
+				SH_Update_task="curl -sS -O https://gh.kejilion.pro/raw.githubusercontent.com/meqte/sh/main/mjack.sh && chmod +x mjack.sh && sed -i 's/canshu=\"default\"/canshu=\"CN\"/g' ./mjack.sh"
 			elif [ -n "$ipv6_address" ]; then
-				SH_Update_task="curl -sS -O https://gh.kejilion.pro/raw.githubusercontent.com/meqte/meqte.github.io/main/sh/mjack.sh && chmod +x mjack.sh && sed -i 's/canshu=\"default\"/canshu=\"V6\"/g' ./mjack.sh"
+				SH_Update_task="curl -sS -O https://gh.kejilion.pro/raw.githubusercontent.com/meqte/sh/main/mjack.sh && chmod +x mjack.sh && sed -i 's/canshu=\"default\"/canshu=\"V6\"/g' ./mjack.sh"
 			else
-				SH_Update_task="curl -sS -O https://gh.kejilion.pro/raw.githubusercontent.com/meqte/meqte.github.io/main/sh/mjack.sh && chmod +x mjack.sh"
+				SH_Update_task="curl -sS -O https://gh.kejilion.pro/raw.githubusercontent.com/meqte/sh/main/mjack.sh && chmod +x mjack.sh"
 			fi
 			check_crontab_installed
 			(crontab -l | grep -v "mjack.sh") | crontab -
