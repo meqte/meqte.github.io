@@ -46,19 +46,6 @@ echo -e "${GREEN}正在准备安装目录...${NC}"
 echo -e "${GREEN}正在下载 Mjack Tools (${VERSION})...${NC}"
 if curl -sL "$M_URL" -o "$INSTALL_PATH"; then
     echo -e "${GREEN}✓ 下载成功${NC}"
-    
-    # 验证下载的文件
-    if [ ! -s "$INSTALL_PATH" ]; then
-        echo -e "${RED}✗ 下载的文件为空${NC}"
-        exit 1
-    fi
-    
-    # 检查文件头部是否正确
-    if ! head -n 1 "$INSTALL_PATH" | grep -q "^#!/bin/bash[[:space:]]*$"; then
-        echo -e "${RED}✗ 文件格式不正确，缺少 shebang${NC}"
-        echo -e "${YELLOW}文件头部内容: $(head -n 1 "$INSTALL_PATH")${NC}"
-        exit 1
-    fi
 else
     echo -e "${RED}✗ 下载失败，请检查网络连接${NC}"
     exit 1
@@ -70,27 +57,12 @@ chmod +x "$INSTALL_PATH"
 
 # 创建快捷方式
 echo -e "${GREEN}正在创建快捷命令 'm'...${NC}"
-# 先删除可能存在的旧链接
-rm -f "$SHORTCUT_PATH"
-# 创建新的软链接
 ln -sf "$INSTALL_PATH" "$SHORTCUT_PATH"
-# 刷新命令哈希
 hash -r 2>/dev/null
 
-# 验证软链接
+# 验证安装
 echo -e "${GREEN}正在验证安装...${NC}"
 if [ -f "$INSTALL_PATH" ] && [ -L "$SHORTCUT_PATH" ]; then
-    # 验证软链接指向正确的文件
-    if [ "$(readlink -f "$SHORTCUT_PATH")" != "$(readlink -f "$INSTALL_PATH")" ]; then
-        echo -e "${RED}✗ 软链接指向错误${NC}"
-        exit 1
-    fi
-    
-    # 验证文件可执行
-    if [ ! -x "$INSTALL_PATH" ]; then
-        echo -e "${RED}✗ 文件不可执行${NC}"
-        exit 1
-    fi
     echo -e "${GREEN}✓ 安装成功！${NC}"
     echo -e "${BLUE}==========================================${NC}"
     echo -e "${BLUE}  Mjack Tools 已成功安装                 ${NC}"
@@ -99,16 +71,6 @@ if [ -f "$INSTALL_PATH" ] && [ -L "$SHORTCUT_PATH" ]; then
     echo -e "${BLUE}  版本号: $VERSION                       ${NC}"
     echo -e "${BLUE}==========================================${NC}"
     echo -e "${YELLOW}正在自动启动 Mjack Tools...${NC}"
-    
-    # 调试信息
-    echo -e "${YELLOW}调试信息:${NC}"
-    echo -e "${YELLOW}  INSTALL_PATH: $INSTALL_PATH${NC}"
-    echo -e "${YELLOW}  SHORTCUT_PATH: $SHORTCUT_PATH${NC}"
-    echo -e "${YELLOW}  文件是否存在: $( [ -f "$INSTALL_PATH" ] && echo "是" || echo "否" )${NC}"
-    echo -e "${YELLOW}  文件权限: $(ls -l "$INSTALL_PATH" 2>/dev/null | awk '{print $1}')${NC}"
-    echo -e "${YELLOW}  软链接是否存在: $( [ -L "$SHORTCUT_PATH" ] && echo "是" || echo "否" )${NC}"
-    echo -e "${YELLOW}  软链接指向: $(readlink -f "$SHORTCUT_PATH" 2>/dev/null)${NC}"
-    echo -e "${YELLOW}  文件头部: $(head -n 1 "$INSTALL_PATH" 2>/dev/null)${NC}"
     
     # 自动启动系统
     exec "$SHORTCUT_PATH"
