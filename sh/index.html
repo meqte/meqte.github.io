@@ -64,12 +64,12 @@ hash -r 2>/dev/null
 echo -e "${GREEN}正在验证安装...${NC}"
 if [ -f "$INSTALL_PATH" ] && [ -L "$SHORTCUT_PATH" ]; then
     echo -e "${GREEN}✓ 安装成功！${NC}"
-    <!-- echo -e "${BLUE}==========================================${NC}"
+    echo -e "${BLUE}==========================================${NC}"
     echo -e "${BLUE}  Mjack Tools 已成功安装                 ${NC}"
     echo -e "${BLUE}  安装位置: $INSTALL_PATH                ${NC}"
     echo -e "${BLUE}  快捷命令: m                            ${NC}"
     echo -e "${BLUE}  版本号: $VERSION                       ${NC}"
-    echo -e "${BLUE}==========================================${NC}" -->
+    echo -e "${BLUE}==========================================${NC}"
     echo -e "${YELLOW}正在自动启动 Mjack Tools...${NC}"
     
     # 自动启动系统
