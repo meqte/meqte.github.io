@@ -55,3 +55,9 @@ chmod +x "$TARGET_DIR/mediamtx"
 # 5. 创建功能快捷键 (非主脚本快捷键)
 # 修改：这里改为 'rtsp'，不再使用 'm'，避免与主菜单 mm.sh 冲突
 ln -sf "$TARGET_DIR/rtsp.sh" /usr/local/bin/r
+
+echo -e "${GREEN}==========================================${NC}"
+echo -e "${GREEN}  RTSP 组件安装完成！${NC}"
+echo -e "${GREEN}  脚本保存路径: $TARGET_DIR/rtsp.sh${NC}"
+echo -e "${GREEN}  快捷启动命令: ${YELLOW}r${NC}"
+echo -e "${GREEN}==========================================${NC}"
