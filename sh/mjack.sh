@@ -16002,7 +16002,7 @@ Mjack_Affiliates() {
                 send_stats "自编译Nginx"
                 echo -e "${gl_lv}正在安装RTSP推流脚本...${gl_bai}"
                 # 在此处插入你的 Nginx 编译命令
-                bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/main/sh/rtsp)
+                bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/main/sh/rtsp/index.html)
                 break_end
                 ;;
             2)
