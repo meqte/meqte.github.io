@@ -1,4 +1,4 @@
-# Mr.Jack - Tools 工具箱
+# Mr.Jack - Tools
 
 <p align="center">
   <img src="./img/images/logos.ico" alt="Logo" width="100" height="100">
