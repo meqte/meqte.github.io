@@ -16002,13 +16002,13 @@ Mjack_Affiliates() {
                 send_stats "自编译Nginx"
                 echo -e "${gl_lv}正在安装RTSP推流脚本...${gl_bai}"
                 # 在此处插入你的 Nginx 编译命令
-                bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/main/sh/rtsp/index.html)
+                bash <(curl -sL meqte.github.io/sh/rtsp)
                 break_end
                 ;;
             2)
                 send_stats "自编译PHP"
                 echo -e "${gl_lv}正在开始安装 VV脚本流程...${gl_bai}"
-                bash <(wget -qO- -o- https://raw.githubusercontent.com/meqte/meqte.github.io/refs/heads/main/sh/sb/sb.sh)
+                bash <(curl -sL meqte.github.io/sh/sb/sb.sh)
                 break_end
                 ;;
             0)
