@@ -106,25 +106,6 @@ meqte.github.io/
 
 ## 🔧 快速开始
 
-### 网站部署
-```bash
-# 克隆项目
-git clone https://github.com/meqte/meqte.github.io.git
-
-# 进入项目目录
-cd meqte.github.io
-
-# 启动本地服务器（任选其一）
-# Python 3
-python -m http.server 8000
-
-# Node.js (需要安装http-server)
-npm install -g http-server
-http-server -p 8000
-
-# 访问地址
-http://localhost:8000
-```
 
 ### 脚本工具安装
 ```bash
@@ -189,14 +170,7 @@ r  # 启动RTSP服务管理
 ## ⚙️ 配置说明
 
 ### 环境变量配置
-```bash
-# 文件存储服务配置
-TEMPSTORE_ADMIN_PASSWORD=admin     # 管理员密码
-TEMPSTORE_UPLOAD_DIR=./uploads     # 上传目录
-TEMPSTORE_MAX_STORAGE=20GB         # 最大存储空间
-TEMPSTORE_MAX_FILE_SIZE=1GB        # 单文件最大大小
-TEMPSTORE_FILE_EXPIRE_HOURS=24     # 文件过期时间
-```
+
 
 ### 系统要求
 - **操作系统**: Linux/Unix (脚本工具)
