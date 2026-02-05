@@ -37,7 +37,10 @@ for FILE in "${FILES[@]}"; do
     
     # 使用 wget 下载
     # -q: 静默模式  -L: 跟踪重定向  -O: 指定保存路径
-    wget -q -L -O "$TARGET_DIR/$FILE" "$DOWNLOAD_URL"
+    # wget -q -L -O "$TARGET_DIR/$FILE" "$DOWNLOAD_URL"
+    # 1. 替换后的 curl 下载命令
+    # -s: 静默, -L: 跟随跳转, -f: 404时报错, -o: 输出路径
+    curl -sLf -o "$TARGET_DIR/$FILE" "$DOWNLOAD_URL"
     
     # 检查上一个命令的退出状态码
     if [ $? -ne 0 ]; then
