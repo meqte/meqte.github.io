@@ -61,6 +61,53 @@ fi
 # 5. 更新软链接
 ln -sf "$TARGET_DIR/rtsp.sh" "$BIN_DIR/r"
 
+# ── 自动网络优化 (提升推流质量) ────────────────────────────────────────
+echo -e "${YELLOW}正在尝试自动优化网络参数...${NC}"
+OPT_PARAMS="net.core.rmem_max=33554432\nnet.core.wmem_max=33554432\nnet.core.rmem_default=33554432\nnet.core.wmem_default=33554432\nnet.core.netdev_max_backlog=5000"
+
+if [ -f /etc/openwrt_release ]; then
+    # OpenWrt 系统
+    if [ -f /etc/rc.local ]; then
+        if ! grep -q "net.core.rmem_max" /etc/rc.local 2>/dev/null; then
+            if sudo -n sh -c "echo '$OPT_PARAMS' >> /etc/rc.local" 2>/dev/null; then
+                echo -e "${GREEN}✅ 已写入 /etc/rc.local (OpenWrt)${NC}"
+                sudo /etc/init.d/network restart 2>/dev/null || true
+            else
+                echo -e "${YELLOW}⚠️ 自动写入 OpenWrt 配置失败，请手动添加至 /etc/rc.local${NC}"
+            fi
+        else
+            echo -e "${GREEN}ℹ️ 网络参数已优化 (OpenWrt)${NC}"
+        fi
+    else
+        echo -e "${YELLOW}⚠️ 未找到 /etc/rc.local，请手动优化网络参数${NC}"
+    fi
+elif [ -f /etc/debian_version ]; then
+    # Debian/Ubuntu 系统
+    CONFIG_FILE="/etc/sysctl.d/99-media-optimize.conf"
+    if [ -f "$CONFIG_FILE" ] && grep -q "net.core.rmem_max" "$CONFIG_FILE" 2>/dev/null; then
+        echo -e "${GREEN}ℹ️ 网络参数已优化 (Debian)${NC}"
+    else
+        if sudo -n bash -c "cat > $CONFIG_FILE <<EOF
+$OPT_PARAMS
+EOF" 2>/dev/null; then
+            echo -e "${GREEN}✅ 已写入 $CONFIG_FILE${NC}"
+            if sudo -n sysctl -p "$CONFIG_FILE" 2>/dev/null; then
+                echo -e "${GREEN}✅ 参数已立即生效${NC}"
+            else
+                echo -e "${YELLOW}⚠️ 配置已写入，请手动执行 'sudo sysctl -p $CONFIG_FILE' 生效${NC}"
+            fi
+        else
+            echo -e "${YELLOW}⚠️ 自动写入 Debian 配置失败，请手动执行：${NC}"
+            echo -e "${YELLOW} sudo bash -c 'cat > $CONFIG_FILE <<EOF\n$OPT_PARAMS\nEOF'${NC}"
+            echo -e "${YELLOW} sudo sysctl -p $CONFIG_FILE${NC}"
+        fi
+    fi
+else
+    echo -e "${YELLOW}⚠️ 未知系统类型，跳过自动网络优化${NC}"
+    echo -e "${YELLOW} 如需优化，请参考 $TARGET_DIR/OK-OK.txt${NC}"
+fi
+# ────────────────────────────────────────────────────────────────────────
+
 echo -e "${GREEN}==========================================${NC}"
 echo -e "${GREEN}  RTSP 组件同步完成！${NC}"
 echo -e "${GREEN}  同步路径: $TARGET_DIR${NC}"
