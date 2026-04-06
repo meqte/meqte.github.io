@@ -3,18 +3,43 @@ sh_v="2026.01.05"
 
 
 # 自动安装检测
-if [ ! -f /usr/local/bin/m ] || [ ! -L /usr/bin/m ]; then
-    # 自动安装过程
-    SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
-    if [ -f "$SCRIPT_PATH" ]; then
-        cp "$SCRIPT_PATH" ~/mjack.sh 2>/dev/null
-    else
-        cp ./mjack.sh ~/mjack.sh 2>/dev/null
+if [ "$(id -u)" -eq 0 ]; then
+    _m_bin="/usr/local/bin/m"
+    if [ ! -f "$_m_bin" ] || [ ! -L /usr/bin/m ]; then
+        SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+        if [ -f "$SCRIPT_PATH" ]; then
+            cp "$SCRIPT_PATH" ~/mjack.sh 2>/dev/null
+        else
+            cp ./mjack.sh ~/mjack.sh 2>/dev/null
+        fi
+        cp ~/mjack.sh "$_m_bin" 2>/dev/null
+        chmod +x "$_m_bin" 2>/dev/null
+        ln -sf "$_m_bin" /usr/bin/m 2>/dev/null
     fi
-    cp ~/mjack.sh /usr/local/bin/m 2>/dev/null
-    chmod +x /usr/local/bin/m 2>/dev/null
-    ln -sf /usr/local/bin/m /usr/bin/m 2>/dev/null
+else
+    _m_bin="$HOME/.local/bin/m"
+    if [ ! -f "$_m_bin" ]; then
+        mkdir -p "$HOME/.local/bin"
+        SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+        if [ -f "$SCRIPT_PATH" ]; then
+            cp "$SCRIPT_PATH" ~/mjack.sh 2>/dev/null
+        else
+            cp ./mjack.sh ~/mjack.sh 2>/dev/null
+        fi
+        cp ~/mjack.sh "$_m_bin" 2>/dev/null
+        chmod +x "$_m_bin" 2>/dev/null
+    fi
 fi
+unset _m_bin
+
+_check_docker_access() {
+    if ! docker info >/dev/null 2>&1; then
+        if [ "$(id -u)" -ne 0 ]; then
+            echo "⚠️  当前用户无 docker 权限，请运行："
+            echo "    sudo usermod -aG docker \$USER && newgrp docker"
+        fi
+    fi
+}
 
 gl_hui='\e[37m'
 gl_hong='\033[31m'

@@ -1,16 +1,18 @@
 #!/bin/sh
-# 定义源脚本路径和软链接目标路径
-SCRIPT_SRC="/root/rtsp/rtsp.sh"
-LINK_DST="/usr/local/bin/r"
-
-# 检查软链接是否已存在，不存在则创建
-if [ ! -L "${LINK_DST}" ]; then
-    echo "正在创建软链接..."
-    ln -s "${SCRIPT_SRC}" "${LINK_DST}"
-    echo "软链接创建成功！直接输入 m 即可运行脚本"
+# 软链接自修复（自适应路径）
+_self="$(readlink -f "$0")"
+if [ "$(id -u)" -eq 0 ]; then
+    _bin_dir="/usr/local/bin"
 else
-    echo "软链接已存在，无需重复创建"
+    _bin_dir="$HOME/.local/bin"
+    mkdir -p "$_bin_dir"
 fi
+
+if [ ! -L "$_bin_dir/r" ] || [ "$(readlink -f "$_bin_dir/r")" != "$_self" ]; then
+    ln -sf "$_self" "$_bin_dir/r" 2>/dev/null && \
+        echo "软链接已更新: $_bin_dir/r → $_self"
+fi
+unset _self _bin_dir
 
 # RTSP推流服务控制脚本
 # 作者: RTSP Tools
@@ -23,15 +25,16 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 全局变量（使用基本shell语法）
-REAL_SCRIPT_PATH=$(readlink -f "$0")
-SCRIPT_DIR=$(cd "$(dirname "$REAL_SCRIPT_PATH")" && pwd)
-BASE_PATH="$SCRIPT_DIR"
+# ── 路径标准化 (强制使用 ~/rtsp) ──────────────────────────
+BASE_PATH="$HOME/rtsp"
 VIDEO_PATH="${BASE_PATH}/4K"
 LOG_DIR="${BASE_PATH}/logs"
 FFMPEG_LOG_DIR="${LOG_DIR}/ffmpeg"
 MEDIAMTX_LOG="${LOG_DIR}/mediamtx.log"
 PID_FILE="${LOG_DIR}/rtsp_server.pid"
 CONFIG_FILE="${BASE_PATH}/mediamtx.yml"
+# ────────────────────────────────────────────────────────
+
 
 # 默认配置
 DEFAULT_STREAM_COUNT=1
